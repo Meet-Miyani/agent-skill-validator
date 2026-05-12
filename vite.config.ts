@@ -65,7 +65,7 @@ export default defineConfig(({ mode }) => {
     base,
     plugins: [injectSiteUrlForHtml(), react(), seoDistFilesPlugin()],
     build: {
-      sourcemap: true,
+      sourcemap: false,
     },
   }
 })
