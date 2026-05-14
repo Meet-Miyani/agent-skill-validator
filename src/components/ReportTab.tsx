@@ -13,23 +13,23 @@ function FilesRiskView({ report, onOpenFile }: { report: ValidationReport; onOpe
       <div className="report-page-header">
         <div>
           <p className="muted-label">Package files</p>
-          <h2 className="mt-1 text-xl font-semibold tracking-tight text-zinc-950 dark:text-zinc-50">File risk map</h2>
-          <p className="mt-1 max-w-3xl text-sm leading-6 text-zinc-500 dark:text-zinc-400">Files with merged validator risks, ordered by severity and impact.</p>
+          <h2 className="mt-1 text-xl font-semibold tracking-tight text-[color:var(--theme-text-primary)]">File risk map</h2>
+          <p className="mt-1 max-w-3xl text-sm leading-6 text-[color:var(--theme-text-muted)]">Files with merged validator risks, ordered by severity and impact.</p>
         </div>
       </div>
       {report.files.mergedRisks.length === 0
-        ? <Surface className="p-4 text-sm text-zinc-500 dark:text-zinc-400">No file risks detected.</Surface>
+        ? <Surface className="p-4 text-sm text-[color:var(--theme-text-muted)]">No file risks detected.</Surface>
         : (
           <div className="grid gap-2 xl:grid-cols-2">
             {report.files.mergedRisks.map((risk) => (
               <button
                 key={risk.path}
                 onClick={() => onOpenFile(risk.path)}
-                className={`panel-hover control-focus flex w-full items-center justify-between gap-4 rounded-xl border border-l-4 bg-white/85 p-3 text-left shadow-sm dark:bg-zinc-900/60 ${severityBorderClass(risk.highestSeverity)}`}
+                className={`panel-hover control-focus flex w-full items-center justify-between gap-4 rounded-xl border border-[color:var(--theme-border)] border-l-4 bg-[color:var(--theme-surface)] p-3 text-left shadow-sm ${severityBorderClass(risk.highestSeverity)}`}
               >
                 <span className="min-w-0">
-                  <span className="block truncate text-sm font-semibold text-zinc-900 dark:text-zinc-50">{risk.path}</span>
-                  <span className="block truncate text-xs text-zinc-500 dark:text-zinc-400">{risk.issues.map((i) => i.reason).join(" · ")}</span>
+                  <span className="block truncate text-sm font-semibold text-[color:var(--theme-text-primary)]">{risk.path}</span>
+                  <span className="block truncate text-xs text-[color:var(--theme-text-muted)]">{risk.issues.map((i) => i.reason).join(" · ")}</span>
                 </span>
                 <StatusPill severity={risk.highestSeverity}>{risk.highestSeverity}</StatusPill>
               </button>

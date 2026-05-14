@@ -27,20 +27,20 @@ export function IssueCard({ issue, files, onOpenFile, onApplyFix }: IssueCardPro
           <SeverityIcon severity={issue.type} className="mt-0.5 h-4 w-4 shrink-0" />
           <div className="min-w-0 flex-1">
             <div className="flex flex-wrap items-center gap-2">
-              <h4 className="min-w-0 flex-1 text-sm font-semibold text-zinc-950 dark:text-zinc-50">{issue.message}</h4>
+              <h4 className="min-w-0 flex-1 text-sm font-semibold text-[color:var(--theme-text-primary)]">{issue.message}</h4>
               <StatusPill severity={issue.severity}>{issue.type}</StatusPill>
             </div>
 
-            {issue.detail && <p className="mt-1.5 text-sm leading-6 text-zinc-500 dark:text-zinc-400">{issue.detail}</p>}
+            {issue.detail && <p className="mt-1.5 text-sm leading-6 text-[color:var(--theme-text-muted)]">{issue.detail}</p>}
 
             <div className="mt-3 flex flex-wrap items-center gap-1.5 text-[11px]">
-              <span className="rounded-md bg-zinc-100 px-2 py-1 font-semibold text-zinc-600 dark:bg-zinc-800 dark:text-zinc-300">{issue.sectionTitle}</span>
+              <span className="theme-chip rounded-md px-2 py-1 font-semibold">{issue.sectionTitle}</span>
               {location && (
-                <span className="rounded-md bg-zinc-100 px-2 py-1 font-mono text-zinc-600 dark:bg-zinc-800 dark:text-zinc-300">
+                <span className="theme-chip rounded-md px-2 py-1 font-mono">
                   {location.path}{location.line ? `:${location.line}` : ""}
                 </span>
               )}
-              {issue.ruleId && <span className="rounded-md bg-zinc-100 px-2 py-1 text-zinc-500 dark:bg-zinc-800 dark:text-zinc-400">{issue.ruleId}</span>}
+              {issue.ruleId && <span className="theme-chip rounded-md px-2 py-1 text-[color:var(--theme-text-soft)]">{issue.ruleId}</span>}
               {fixPreview && <span className="rounded-md bg-sky-50 px-2 py-1 font-semibold text-sky-700 dark:bg-sky-500/10 dark:text-sky-200">auto-fix available</span>}
             </div>
 
@@ -66,7 +66,7 @@ export function IssueCard({ issue, files, onOpenFile, onApplyFix }: IssueCardPro
           {location && (
             <button
               onClick={() => onOpenFile(location.path, location.line)}
-              className="button-motion control-focus rounded-lg bg-zinc-950 px-3 py-2 text-xs font-semibold text-lime-200 hover:bg-zinc-800 dark:bg-lime-200 dark:text-zinc-950 dark:hover:bg-lime-100"
+              className="theme-primary-button button-motion control-focus rounded-lg px-3 py-2 text-xs font-semibold"
             >
               Open file{location.line ? `:${location.line}` : ""}
             </button>
@@ -126,8 +126,8 @@ export function FindingsExplorer({ report, files, onOpenFile, onApplyIssueFix }:
       <div className="report-page-header">
         <div>
           <p className="muted-label">Issue queue</p>
-          <h2 className="mt-1 text-xl font-semibold tracking-tight text-zinc-950 dark:text-zinc-50">Findings</h2>
-          <p className="mt-1 max-w-3xl text-sm leading-6 text-zinc-500 dark:text-zinc-400">Errors and warnings are prioritized. Fixable findings expose a one-click patch when the validator can infer a safe edit.</p>
+          <h2 className="mt-1 text-xl font-semibold tracking-tight text-[color:var(--theme-text-primary)]">Findings</h2>
+          <p className="mt-1 max-w-3xl text-sm leading-6 text-[color:var(--theme-text-muted)]">Errors and warnings are prioritized. Fixable findings expose a one-click patch when the validator can infer a safe edit.</p>
         </div>
         <CountPill severity={severity}>{visible.length} shown</CountPill>
       </div>
@@ -157,10 +157,10 @@ function FilterButton({ active, onClick, label, count }: { active: boolean; onCl
   return (
     <button
       onClick={onClick}
-      className={`button-motion control-focus inline-flex h-8 items-center gap-1.5 rounded-lg px-2.5 text-xs font-semibold ${active ? "bg-zinc-950 text-lime-200 dark:bg-lime-200 dark:text-zinc-950" : "text-zinc-600 hover:bg-zinc-100 hover:text-zinc-950 dark:text-zinc-300 dark:hover:bg-zinc-800 dark:hover:text-zinc-50"}`}
+      className={`button-motion control-focus inline-flex h-8 items-center gap-1.5 rounded-lg px-2.5 text-xs font-semibold ${active ? "theme-active-item" : "theme-nav-item"}`}
     >
       {label}
-      <span className={`rounded-full px-1.5 py-0.5 text-[10px] font-semibold ${active ? "bg-white/15 text-current dark:bg-zinc-950/10" : "bg-zinc-100 text-zinc-500 dark:bg-zinc-800 dark:text-zinc-400"}`}>{count}</span>
+      <span className={`rounded-full px-1.5 py-0.5 text-[10px] font-semibold ${active ? "bg-white/15 text-current" : "theme-chip"}`}>{count}</span>
     </button>
   )
 }

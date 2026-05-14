@@ -46,35 +46,35 @@ export function ScoreBreakdown({ report, files, onOpenFile, onChangeView }: Scor
       <div className="report-page-header">
         <div>
           <p className="muted-label">Scoring model</p>
-          <h2 className="mt-1 text-xl font-semibold tracking-tight text-zinc-950 dark:text-zinc-50">Score</h2>
-          <p className="mt-1 max-w-3xl text-sm leading-6 text-zinc-500 dark:text-zinc-400">Dimension impact with failed sub-check navigation into the issue queue when a related finding exists.</p>
+          <h2 className="mt-1 text-xl font-semibold tracking-tight text-[color:var(--theme-text-primary)]">Score</h2>
+          <p className="mt-1 max-w-3xl text-sm leading-6 text-[color:var(--theme-text-muted)]">Dimension impact with failed sub-check navigation into the issue queue when a related finding exists.</p>
         </div>
       </div>
 
       <div className="grid gap-3 lg:grid-cols-2">
         {report.scoreDimensions.map((dim) => (
           <Surface key={dim.id} className="overflow-hidden">
-            <div className="border-b border-zinc-100 p-4 dark:border-zinc-800">
+            <div className="border-b border-[color:var(--theme-border)] p-4">
               <div className="flex items-start justify-between gap-4">
                 <div className="min-w-0">
-                  <h3 className="font-semibold text-zinc-950 dark:text-zinc-50">{dim.title}</h3>
-                  <p className="mt-1 text-sm leading-6 text-zinc-500 dark:text-zinc-400">{dim.summary}</p>
+                  <h3 className="font-semibold text-[color:var(--theme-text-primary)]">{dim.title}</h3>
+                  <p className="mt-1 text-sm leading-6 text-[color:var(--theme-text-muted)]">{dim.summary}</p>
                 </div>
-                <div className="shrink-0 text-xl font-semibold text-zinc-950 dark:text-zinc-50">
-                  {dim.score}<span className="text-xs font-medium text-zinc-400">/{dim.max}</span>
+                <div className="shrink-0 text-xl font-semibold text-[color:var(--theme-text-primary)]">
+                  {dim.score}<span className="text-xs font-medium text-[color:var(--theme-text-soft)]">/{dim.max}</span>
                 </div>
               </div>
               <div className="mt-3"><ScoreBar score={dim.score} max={dim.max} /></div>
             </div>
-            <div className="divide-y divide-zinc-100 dark:divide-zinc-800">
+            <div className="divide-y divide-[color:var(--theme-border)]">
               {dim.subChecks.map((check, i) => (
                 <button
                   key={`${check.label}-${i}`}
                   onClick={() => !check.passed && handleOpenRelated(check.label)}
-                  className="button-motion control-focus flex min-h-10 w-full items-center gap-2.5 px-4 py-2 text-left hover:bg-zinc-50 dark:hover:bg-zinc-900/80"
+                  className="button-motion control-focus flex min-h-10 w-full items-center gap-2.5 px-4 py-2 text-left hover:bg-[color:var(--theme-surface-soft)]"
                 >
                   <SeverityIcon severity={check.passed ? "pass" : "warning"} className="h-4 w-4 shrink-0" />
-                  <span className={`flex-1 text-sm ${check.passed ? "text-zinc-700 dark:text-zinc-300" : "font-semibold text-amber-800 dark:text-amber-200"}`}>
+                  <span className={`flex-1 text-sm ${check.passed ? "text-[color:var(--theme-text-muted)]" : "font-semibold text-amber-800 dark:text-amber-200"}`}>
                     {check.label}
                   </span>
                   <span className={`text-xs font-semibold ${check.passed ? "text-emerald-600 dark:text-emerald-300" : "text-amber-700 dark:text-amber-200"}`}>
@@ -96,8 +96,8 @@ export function TokenBudgetView({ report }: { report: ValidationReport }) {
       <div className="report-page-header">
         <div>
           <p className="muted-label">Activation cost</p>
-          <h2 className="mt-1 text-xl font-semibold tracking-tight text-zinc-950 dark:text-zinc-50">Token budget</h2>
-          <p className="mt-1 text-sm leading-6 text-zinc-500 dark:text-zinc-400">Approximate token usage when an agent activates this skill.</p>
+          <h2 className="mt-1 text-xl font-semibold tracking-tight text-[color:var(--theme-text-primary)]">Token budget</h2>
+          <p className="mt-1 text-sm leading-6 text-[color:var(--theme-text-muted)]">Approximate token usage when an agent activates this skill.</p>
         </div>
       </div>
       <div className="grid gap-3 md:grid-cols-3">
@@ -107,8 +107,8 @@ export function TokenBudgetView({ report }: { report: ValidationReport }) {
       </div>
       {report.tokenBudget.largestRef && (
         <Surface className="p-4">
-          <div className="text-sm font-semibold text-zinc-950 dark:text-zinc-50">Largest reference file</div>
-          <div className="mt-1 text-sm text-zinc-500 dark:text-zinc-400">
+          <div className="text-sm font-semibold text-[color:var(--theme-text-primary)]">Largest reference file</div>
+          <div className="mt-1 text-sm text-[color:var(--theme-text-muted)]">
             {report.tokenBudget.largestRef.name} — ~{report.tokenBudget.largestRef.tokens} tokens
           </div>
         </Surface>
@@ -123,19 +123,19 @@ export function FixesView({ report }: { report: ValidationReport }) {
       <div className="report-page-header">
         <div>
           <p className="muted-label">Repair backlog</p>
-          <h2 className="mt-1 text-xl font-semibold tracking-tight text-zinc-950 dark:text-zinc-50">Fixes</h2>
-          <p className="mt-1 text-sm leading-6 text-zinc-500 dark:text-zinc-400">Remaining scored improvements, ordered by highest impact.</p>
+          <h2 className="mt-1 text-xl font-semibold tracking-tight text-[color:var(--theme-text-primary)]">Fixes</h2>
+          <p className="mt-1 text-sm leading-6 text-[color:var(--theme-text-muted)]">Remaining scored improvements, ordered by highest impact.</p>
         </div>
       </div>
       <div className="space-y-3">
         {report.fixes.length === 0
-          ? <Surface className="p-4 text-sm text-zinc-500 dark:text-zinc-400">No scored fixes remaining.</Surface>
+          ? <Surface className="p-4 text-sm text-[color:var(--theme-text-muted)]">No scored fixes remaining.</Surface>
           : report.fixes.map((fix, i) => (
             <Surface key={`${fix.label}-${i}`} className="p-4">
               <div className="flex items-start justify-between gap-4">
                 <div>
-                  <div className="text-sm font-semibold text-zinc-950 dark:text-zinc-50">{fix.label}</div>
-                  <div className="mt-0.5 text-xs text-zinc-500 dark:text-zinc-400">{fix.dimension} · {fix.sectionId}</div>
+                  <div className="text-sm font-semibold text-[color:var(--theme-text-primary)]">{fix.label}</div>
+                  <div className="mt-0.5 text-xs text-[color:var(--theme-text-muted)]">{fix.dimension} · {fix.sectionId}</div>
                 </div>
                 <span className="rounded-full bg-sky-50 px-2.5 py-1 text-xs font-semibold text-sky-700 dark:bg-sky-500/10 dark:text-sky-200">+{fix.points}</span>
               </div>

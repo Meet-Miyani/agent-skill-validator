@@ -20,10 +20,10 @@ export function WorkspaceTabs({
 }) {
   const fileMap = new Map(files.map((file) => [file.path, file]))
   return (
-    <div className="flex h-10 shrink-0 items-end gap-1 overflow-x-auto border-b border-zinc-200 bg-white/65 px-2 pt-1.5 backdrop-blur-xl dark:border-zinc-800 dark:bg-zinc-950/45">
+    <div className="theme-tabbar flex h-10 shrink-0 items-end gap-1 overflow-x-auto border-b px-2 pt-1.5 backdrop-blur-xl">
       <button
         onClick={() => onSelectTab("report")}
-        className={`button-motion control-focus flex h-8 shrink-0 items-center gap-1.5 rounded-t-lg border px-3 text-[13px] font-medium ${activeTab === "report" ? "border-zinc-200 border-b-white bg-white text-zinc-950 shadow-sm dark:border-zinc-800 dark:border-b-zinc-950 dark:bg-lime-200 dark:text-zinc-950" : "border-transparent text-zinc-500 hover:bg-white/80 hover:text-zinc-900 dark:hover:bg-zinc-900 dark:hover:text-zinc-100"}`}
+        className={`button-motion control-focus flex h-8 shrink-0 items-center gap-1.5 rounded-t-lg border px-3 text-[13px] font-medium ${activeTab === "report" ? "theme-active-item border-b-transparent" : "theme-nav-item border-transparent"}`}
       >
         <BarChart3 className="h-3.5 w-3.5" /> Report
       </button>
@@ -34,7 +34,7 @@ export function WorkspaceTabs({
         return (
           <div
             key={path}
-            className={`group flex h-8 min-w-[118px] max-w-[220px] shrink-0 items-center overflow-hidden rounded-t-lg border ${active ? "border-zinc-200 border-b-white bg-white text-zinc-950 shadow-sm dark:border-zinc-800 dark:border-b-zinc-950 dark:bg-lime-200 dark:text-zinc-950" : "border-transparent text-zinc-500 hover:bg-white/80 hover:text-zinc-900 dark:hover:bg-zinc-900 dark:hover:text-zinc-100"}`}
+            className={`group flex h-8 min-w-[118px] max-w-[220px] shrink-0 items-center overflow-hidden rounded-t-lg border ${active ? "theme-active-item border-b-transparent" : "theme-nav-item border-transparent"}`}
             title={path}
           >
             <button
@@ -46,7 +46,7 @@ export function WorkspaceTabs({
             </button>
             <button
               onClick={() => onCloseFile(path)}
-              className="control-focus mr-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-md text-zinc-400 transition hover:bg-zinc-200 hover:text-zinc-700 dark:hover:bg-zinc-800 dark:hover:text-zinc-100"
+              className="theme-ghost-button control-focus mr-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-md transition"
               aria-label={`Close ${path}`}
             >
               <X className="h-3 w-3" />
