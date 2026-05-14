@@ -108,7 +108,7 @@ export function Overview({ report, files, onOpenFile, onChangeView }: Props) {
             {firstIssue ? (
               <button
                 onClick={() => firstIssueLoc ? onOpenFile(firstIssueLoc.path, firstIssueLoc.line) : onChangeView("findings", null)}
-                className="button-motion control-focus mt-3 w-full rounded-xl border border-zinc-200 bg-white/85 p-3 text-left shadow-sm hover:border-zinc-300 hover:bg-white dark:border-zinc-800 dark:bg-zinc-900/70 dark:hover:bg-zinc-900"
+                className="button-motion control-focus mt-3 w-full rounded-xl border border-zinc-200 bg-white/85 p-3 text-left shadow-sm hover:border-zinc-300 hover:bg-white dark:border-zinc-800 dark:bg-zinc-900/70 dark:hover:border-zinc-700 dark:hover:bg-zinc-900"
               >
                 <div className="flex items-start gap-2.5">
                   <SeverityIcon severity={firstIssue.type} className="mt-0.5 h-4 w-4 shrink-0" />
@@ -208,7 +208,7 @@ function SectionCard({ section, onClick }: { section: ValidationSection; onClick
   return (
     <button
       onClick={onClick}
-      className={`panel-hover control-focus rounded-xl border border-l-4 bg-white/85 p-3 text-left shadow-sm dark:bg-zinc-900/60 ${severityBorderClass(section.severity)} ${section.status === "pass" ? "opacity-75" : ""}`}
+      className={`panel-hover control-focus rounded-xl border border-l-4 bg-white/85 p-3 text-left shadow-sm dark:bg-zinc-900/60 ${severityBorderClass(section.severity)} ${section.status === "pass" ? "opacity-80 dark:opacity-95" : ""}`}
     >
       <div className="flex items-start justify-between gap-2">
         <div className="min-w-0">
