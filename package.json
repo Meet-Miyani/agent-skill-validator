@@ -1,9 +1,9 @@
 {
-  "name": "agent-skill-check",
+  "name": "agent-skill-validator",
   "private": true,
   "version": "0.3.7",
   "type": "module",
-  "description": "Agent Skill Check — validate AI agent skill packages (SKILL.md, zip, .skill) in the browser with scores, findings, token budget, and export.",
+  "description": "AI skill checker and agent skill validator for folders, ZIPs, .skill bundles, SKILL.md files, scripts, references, links, assets, and token budget.",
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",

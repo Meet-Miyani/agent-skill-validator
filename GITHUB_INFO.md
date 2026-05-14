@@ -1,76 +1,96 @@
 # GitHub Repository Info
 
-Use these assets when setting up the GitHub repository.
+Use this reference when configuring the public repository, README, and GitHub Pages site.
 
----
+## Repository name
 
-## 📌 Repository description (≤ 350 chars)
-
-> Browser-based validator for AI agent skill packages (SKILL.md, ZIP, .skill). Scores structure, description quality, token budget, security patterns & export readiness — entirely client-side. Edit, fix, and export repaired packages without leaving the tab.
-
----
-
-## 🏷️ Topics / tags
-
-```
-ai-agent  skill-md  validator  static-site  react  vite  typescript  tailwindcss
-openai  anthropic  agent-skills  browser-tool  zero-upload  open-source  developer-tools
+```txt
+agent-skill-validator
 ```
 
----
+## Repository description
 
-## 🔍 SEO meta (index.html / .env.production)
+```txt
+AI skill checker and agent skill validator for folders, ZIPs, .skill bundles, SKILL.md files, scripts, references, links, assets, and token budget.
+```
+
+## Topics
+
+```txt
+ai-skill-checker
+agent-skill-validator
+agent-skills
+ai-agent-skills
+skill-checker
+skill-validator
+skill-md
+claude-skills
+developer-tools
+static-analysis
+validation
+react
+vite
+github-pages
+```
+
+## SEO metadata
 
 | Field | Value |
 |---|---|
-| `<title>` | `Agent Skill Check — Validate AI Agent Skill Packages` |
-| `description` | `Free browser tool to validate, edit, score, and export AI agent SKILL.md packages. Checks structure, token budget, references, and security — no server upload required.` |
-| `og:title` | `Agent Skill Check` |
-| `og:description` | `Validate AI agent skill packages in the browser. Score, fix, and export — zero server upload.` |
-| `twitter:card` | `summary_large_image` |
-| Keywords | `SKILL.md validator, AI agent skills, agent skill check, skill package linter, openai skill validator, anthropic skill validator` |
+| `<title>` | `SkillLint — AI Skill Checker & Agent Skill Validator` |
+| `description` | `Check and validate AI agent skills in your browser. Upload folders, ZIPs, .skill bundles, or SKILL.md files and review scripts, references, links, assets, and token budget.` |
+| `application-name` | `SkillLint` |
+| `theme-color` | `#d7ff45` |
+| `og:title` | `SkillLint — AI Skill Checker & Agent Skill Validator` |
+| `og:description` | `Upload an AI agent skill folder, ZIP, .skill bundle, or SKILL.md file and get a clean validation report for structure, scripts, references, links, assets, and token budget.` |
+| `twitter:title` | `SkillLint — AI Skill Checker & Agent Skill Validator` |
+| `twitter:description` | `Check and validate AI agent skills in the browser, including folders, ZIPs, .skill bundles, and SKILL.md files.` |
+| Keywords | `AI skill checker, agent skill validator, skill checker, skill check, SKILL.md validator, .skill validator, Claude skills validator, AI agent skills` |
 
----
+Canonical and social URLs should resolve under:
 
-## 🖼️ Social / OG image generation prompt
-
-Use this with Midjourney, DALL-E 3, or Ideogram to create a 1200×630 OG banner:
-
-```
-A clean, dark-themed developer tool screenshot mockup for "Agent Skill Check".
-Dark navy/slate-950 background. Left panel shows a vertical nav with section names
-like "Structure", "References", "Security". Center panel shows a code editor with
-highlighted issue lines. Right panel shows a green score badge "87/100" with a
-bold letter grade "B". Top header bar has a violet gradient logo mark and action
-buttons. Minimal, modern SaaS UI style. No people. Typography-forward layout.
-1200x630, sharp edges, high contrast, professional open-source tool aesthetic.
-Accent color: violet #7c3aed.
+```txt
+https://<username>.github.io/agent-skill-validator/
 ```
 
-### Alternative: minimal wordmark banner
+## JSON-LD
 
+```html
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "SkillLint",
+  "applicationCategory": "DeveloperApplication",
+  "operatingSystem": "Web",
+  "description": "A browser-based AI skill checker and agent skill validator for folders, ZIP archives, .skill bundles, SKILL.md files, scripts, references, links, assets, token budget, and structure.",
+  "url": "https://<username>.github.io/agent-skill-validator/",
+  "softwareVersion": "0.3.7",
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "USD"
+  }
+}
+</script>
 ```
-Minimalist typographic banner for a GitHub repository. Dark slate background (#0f172a).
-Large bold white text "Agent Skill Check" with a small violet magnifying-glass icon to
-the left. Below in lighter text: "Validate · Score · Fix · Export". Subtle violet
-gradient glow behind the title. Clean, modern, developer-focused. 1200x630px.
-No stock photos, no people.
+
+## OG image prompt
+
+If you add `public/og-image.png`, use a 1200x630 banner that matches the live product:
+
+```txt
+A clean dark developer-tool interface for "SkillLint". Deep slate background, lime accent (#d7ff45), editorial typography, and a browser-based validation workspace. Left panel shows report sections like Structure, References, Security. Center panel shows a skill file editor with highlighted issues. Right panel shows a score badge and compact issue summary. Minimal, modern, open-source developer tool aesthetic. No people. High contrast. 1200x630.
 ```
 
----
+## Launch copy
 
-## 📣 Launch tweet / post copy
+```txt
+SkillLint is live: an AI skill checker and agent skill validator for folders, ZIPs, .skill bundles, and SKILL.md files.
 
-```
-🔍 Agent Skill Check — validate your AI agent SKILL.md packages before shipping
+- Browser-based report with structure, scripts, references, links, assets, and token-budget checks
+- No upload endpoint
+- Edit files, apply fixes, and export a repaired bundle
 
-✅ 14 review sections
-📊 100-point score with letter grade
-🔒 Runs entirely in the browser (zero server upload)
-✏️ Edit, fix, and export a repaired ZIP
-
-Open source 👇
-github.com/Meet-Miyani/agent-skill-check
-
-#AIAgents #OpenSource #DeveloperTools
+https://github.com/Meet-Miyani/agent-skill-validator
 ```

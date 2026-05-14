@@ -35,13 +35,13 @@ export function UploadPanel({
       : "border-zinc-900/15 bg-white/70 hover:border-zinc-900/35 hover:bg-white"
 
   return (
-    <aside className={`relative rounded-[28px] border p-3 backdrop-blur-xl ${shell}`} aria-label="Skill package upload">
+    <aside className={`relative rounded-[28px] border p-3 backdrop-blur-xl ${shell}`} aria-label="AI agent skill upload">
       <div className="pointer-events-none absolute inset-x-6 top-0 h-px bg-gradient-to-r from-transparent via-white/60 to-transparent" />
 
       <div className="flex items-center justify-between gap-4 px-2 pb-3">
         <div>
-          <p className={`text-[11px] font-semibold uppercase tracking-[0.18em] ${darkMode ? "text-lime-200/70" : "text-zinc-500"}`}>Local audit input</p>
-          <h2 className={`mt-1 text-lg font-semibold tracking-tight ${darkMode ? "text-white" : "text-zinc-950"}`}>Drop the package here.</h2>
+          <p className={`text-[11px] font-semibold uppercase tracking-[0.18em] ${darkMode ? "text-lime-200/70" : "text-zinc-500"}`}>Local skill audit</p>
+          <h2 className={`mt-1 text-lg font-semibold tracking-tight ${darkMode ? "text-white" : "text-zinc-950"}`}>Drop an AI agent skill.</h2>
         </div>
         <div className={`flex h-10 w-10 items-center justify-center rounded-2xl border ${darkMode ? "border-white/10 bg-white/5 text-lime-200" : "border-zinc-900/10 bg-zinc-950 text-lime-200"}`}>
           <ScanLine className="h-5 w-5" />
@@ -60,8 +60,8 @@ export function UploadPanel({
             <UploadCloud className="h-8 w-8" />
           </div>
 
-          <p className={`mt-5 text-xl font-semibold tracking-tight ${darkMode ? "text-white" : "text-zinc-950"}`}>Scan a skill package</p>
-          <p className={`mx-auto mt-2 max-w-sm text-sm leading-6 ${darkMode ? "text-zinc-400" : "text-zinc-600"}`}>Drag files in, or choose a ZIP, .skill archive, folder, or single SKILL.md file. Validation runs entirely in this browser.</p>
+          <p className={`mt-5 text-xl font-semibold tracking-tight ${darkMode ? "text-white" : "text-zinc-950"}`}>Check skill</p>
+          <p className={`mx-auto mt-2 max-w-sm text-sm leading-6 ${darkMode ? "text-zinc-400" : "text-zinc-600"}`}>Supports folders, ZIP archives, .skill bundles, and standalone SKILL.md files.</p>
 
           <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:justify-center">
             <label className={`control-focus button-motion inline-flex min-h-11 cursor-pointer items-center justify-center gap-2 rounded-full px-5 py-2.5 text-sm font-semibold ${darkMode ? "bg-lime-200 text-zinc-950 hover:bg-lime-100" : "bg-zinc-950 text-white hover:bg-zinc-800"}`}>
@@ -100,7 +100,7 @@ export function UploadPanel({
 
       <div className={`mt-3 flex items-start gap-3 rounded-2xl border px-4 py-3 ${darkMode ? "border-white/10 bg-white/[0.03] text-zinc-400" : "border-zinc-900/10 bg-[#f9f4e7] text-zinc-600"}`}>
         <LockKeyhole className={`mt-0.5 h-4 w-4 shrink-0 ${darkMode ? "text-lime-200" : "text-zinc-900"}`} />
-        <p className="text-xs leading-5"><span className="font-semibold">No upload endpoint.</span> Files are parsed locally, edited locally, and exported from memory.</p>
+        <p className="text-xs leading-5"><span className="font-semibold">No upload endpoint.</span> Files are parsed locally, checked locally, edited locally, and exported from memory.</p>
       </div>
     </aside>
   )

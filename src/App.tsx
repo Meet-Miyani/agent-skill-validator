@@ -21,6 +21,7 @@ import {
   downloadEditedSkillZip, downloadJsonReport,
   readBrowserFiles, readDroppedItems, toEditableFiles,
 } from "./domain/packageIO"
+import { buildSampleSkillFiles } from "./domain/sampleSkill"
 import type { EditableSkillFile, IssueLocation } from "./domain/files"
 import { fileByPath, toValidatorFiles } from "./domain/files"
 import type { Severity, ValidationIssue } from "./validator/types"
@@ -87,6 +88,13 @@ export default function App() {
     },
     [panels],
   )
+
+  const loadSampleReport = useCallback(() => {
+    setError(null)
+    setNotice(null)
+    flushSync(() => { processFiles(buildSampleSkillFiles()) })
+    flashNotice("Sample report loaded")
+  }, [flashNotice, processFiles])
 
   const processUpload = useCallback(
     async (uploaded: File[]) => {
@@ -213,6 +221,7 @@ export default function App() {
           error={error}
           darkMode={darkMode}
           onToggleDarkMode={toggleDarkMode}
+          onLoadSample={loadSampleReport}
           onDragActiveChange={setDragActive}
           onFilesSelected={processUpload}
           onDropFiles={handleDrop}

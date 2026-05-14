@@ -82,8 +82,8 @@ export function WhatGetsScanned() {
       <div className="mx-auto max-w-7xl">
         <SectionHeading
           eyebrow="Scan surface"
-          title="A package review, not a decoration pass."
-          detail="The validator walks the package the way an agent consumes it: root instructions first, then linked references, scripts, metadata, and risky repository artifacts."
+          title="An AI skill audit, not a decoration pass."
+          detail="SkillLint checks the skill the way an agent consumes it: root instructions first, then linked references, scripts, metadata, assets, and risky repository artifacts."
         />
         <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
           <FeatureCard icon={<FileCode2 className="h-5 w-5" />} title="SKILL.md structure" detail="Root file presence, YAML delimiters, name and description fields, body size, headings, and examples." />
@@ -103,8 +103,8 @@ export function ChecksAndWorkflow() {
         <div className="rounded-[32px] border border-zinc-900/10 bg-[#fffdf6] p-6 shadow-sm sm:p-8">
           <SectionHeading
             eyebrow="Checks performed"
-            title="Clear findings mapped to real authoring work."
-            detail="Each report groups checks, scanned targets, algorithms used, and references so contributors can understand what needs attention."
+            title="Clear findings mapped to real skill authoring work."
+            detail="Each report groups checks, scanned targets, algorithms used, and references so authors can understand what needs attention."
           />
           <ul className="mt-8 grid gap-3 sm:grid-cols-2">
             <CheckItem>Spec compliance for root files, frontmatter, body limits, and markdown fences.</CheckItem>
@@ -120,8 +120,8 @@ export function ChecksAndWorkflow() {
           <div className="flex items-start justify-between gap-4 border-b border-white/10 pb-6">
             <SectionHeading
               eyebrow="Workflow"
-              title="From rough package to exportable skill."
-              detail="The landing page now mirrors the product: inspect, fix, verify, export."
+              title="From rough skill to exportable package."
+              detail="The workflow mirrors the product: check, inspect, repair, and export."
               dark
             />
             <div className="hidden h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-lime-200 text-zinc-950 sm:flex">
@@ -129,10 +129,10 @@ export function ChecksAndWorkflow() {
             </div>
           </div>
           <div className="mt-7">
-            <WorkflowStep step="01" Icon={FileSearch} title="Upload a package" detail="Drop a ZIP, .skill, folder, or SKILL.md file." />
+            <WorkflowStep step="01" Icon={FileSearch} title="Upload a skill" detail="Drop a ZIP, .skill bundle, folder, or SKILL.md file." />
             <WorkflowStep step="02" Icon={GitPullRequest} title="Review findings" detail="Open issue groups, source-backed checks, file risks, and section metrics." />
             <WorkflowStep step="03" Icon={Wand2} title="Repair faster" detail="Apply supported fixes, auto-link references, or copy an AI fix prompt." />
-            <WorkflowStep step="04" Icon={Download} title="Export the result" detail="Download a repaired skill package or JSON report." />
+            <WorkflowStep step="04" Icon={Download} title="Export the result" detail="Download a repaired skill bundle or JSON report." />
           </div>
         </div>
       </div>

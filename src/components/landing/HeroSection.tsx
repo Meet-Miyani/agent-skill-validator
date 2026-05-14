@@ -1,8 +1,6 @@
 import React, { type DragEvent } from "react"
-import { ArrowRight, Braces, CheckCircle2, Github, ShieldCheck, Sparkles } from "lucide-react"
+import { ArrowRight, Braces, CheckCircle2, ShieldCheck, Sparkles } from "lucide-react"
 import { UploadPanel } from "./UploadPanel"
-
-const GITHUB_URL = "https://github.com/Meet-Miyani/agent-skill-check"
 
 function SpecPill({ children, darkMode }: { children: React.ReactNode; darkMode: boolean }) {
   return (
@@ -28,6 +26,7 @@ interface Props {
   dragActive: boolean
   error: string | null
   darkMode: boolean
+  onLoadSample: () => void
   onDragActiveChange: (active: boolean) => void
   onFilesSelected: (files: File[]) => void
   onDropFiles: (event: DragEvent<HTMLDivElement>) => void
@@ -48,18 +47,18 @@ export function HeroSection(props: Props) {
         <div>
           <div className="flex flex-wrap items-center gap-2">
             <span className={`inline-flex items-center gap-2 rounded-full border px-3 py-1.5 text-xs font-semibold uppercase tracking-[0.16em] ${darkMode ? "border-lime-200/20 bg-lime-200/10 text-lime-100" : "border-zinc-900 bg-zinc-950 text-lime-200 shadow-sm"}`}>
-              <Sparkles className="h-3.5 w-3.5" /> Skill validation bench
+              <Sparkles className="h-3.5 w-3.5" /> Browser-based agent skill audit
             </span>
             <SpecPill darkMode={darkMode}>Local-first</SpecPill>
             <SpecPill darkMode={darkMode}>Guideline-aware</SpecPill>
           </div>
 
           <h1 className={`mt-8 max-w-4xl text-[clamp(3rem,8vw,6.8rem)] font-normal leading-[0.92] tracking-[-0.055em] ${darkMode ? "text-white" : "text-zinc-950"}`} style={{ fontFamily: 'Georgia, "Times New Roman", serif' }}>
-            Ship skills that survive review.
+            Check AI agent skills before they ship.
           </h1>
 
           <p className={`mt-6 max-w-2xl text-lg leading-8 ${darkMode ? "text-zinc-300" : "text-zinc-700"}`}>
-            Agent Skill Check audits <code className={`rounded-md border px-1.5 py-0.5 text-[0.9em] font-semibold ${darkMode ? "border-white/10 bg-white/5 text-lime-200" : "border-zinc-900/10 bg-white/70 text-zinc-950"}`}>SKILL.md</code> packages for structure, progressive disclosure, reference hygiene, token budget, safety patterns, and export readiness before the package reaches an agent runtime.
+            SkillLint checks AI agent skills from folders, ZIP archives, .skill bundles, and <code className={`rounded-md border px-1.5 py-0.5 text-[0.9em] font-semibold ${darkMode ? "border-white/10 bg-white/5 text-lime-200" : "border-zinc-900/10 bg-white/70 text-zinc-950"}`}>SKILL.md</code> files - then turns structure, script, reference, link, asset, and token issues into a clean report you can act on.
           </p>
 
           <div className="mt-8 flex flex-col gap-3 sm:flex-row">
@@ -67,22 +66,21 @@ export function HeroSection(props: Props) {
               href="#scan"
               className={`control-focus button-motion inline-flex min-h-12 items-center justify-center gap-2 rounded-full px-5 py-3 text-sm font-semibold ${darkMode ? "bg-lime-200 text-zinc-950 hover:bg-lime-100" : "bg-zinc-950 text-white hover:bg-zinc-800"}`}
             >
-              Scan a package <ArrowRight className="h-4 w-4" />
+              Check skill <ArrowRight className="h-4 w-4" />
             </a>
-            <a
-              href={GITHUB_URL}
-              target="_blank"
-              rel="noreferrer"
+            <button
+              type="button"
+              onClick={props.onLoadSample}
               className={`control-focus button-motion inline-flex min-h-12 items-center justify-center gap-2 rounded-full border px-5 py-3 text-sm font-semibold ${darkMode ? "border-white/15 bg-white/5 text-white hover:bg-white/10" : "border-zinc-900/15 bg-white/65 text-zinc-900 hover:bg-white"}`}
             >
-              <Github className="h-4 w-4" /> View source
-            </a>
+              <CheckCircle2 className="h-4 w-4" /> View sample report
+            </button>
           </div>
 
           <div className={`mt-10 grid max-w-3xl gap-4 rounded-[28px] border p-4 backdrop-blur ${darkMode ? "border-white/10 bg-black/20" : "border-zinc-900/10 bg-white/45"} sm:grid-cols-3`}>
-            <ProofRow icon={<CheckCircle2 className="h-4 w-4" />} title="90 checks" detail="Grouped into human-readable report sections instead of raw lint noise." darkMode={darkMode} />
-            <ProofRow icon={<Braces className="h-4 w-4" />} title="Editable output" detail="Open files, apply supported fixes, auto-link references, export repaired ZIP." darkMode={darkMode} />
-            <ProofRow icon={<ShieldCheck className="h-4 w-4" />} title="No server hop" detail="ZIP and folder parsing stay inside the browser session." darkMode={darkMode} />
+            <ProofRow icon={<CheckCircle2 className="h-4 w-4" />} title="90 checks" detail="Grouped into readable audit sections instead of raw validator noise." darkMode={darkMode} />
+            <ProofRow icon={<Braces className="h-4 w-4" />} title="Editable report" detail="Open files, apply supported fixes, auto-link references, and export a repaired ZIP." darkMode={darkMode} />
+            <ProofRow icon={<ShieldCheck className="h-4 w-4" />} title="No upload step" detail="Folders, ZIPs, and .skill bundles stay inside the browser session." darkMode={darkMode} />
           </div>
         </div>
 

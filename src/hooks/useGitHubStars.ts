@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react"
 
-const CACHE_KEY = "agent-skill-check-stars"
+const CACHE_KEY = "agent-skill-validator-stars"
 const CACHE_TTL_MS = 6 * 60 * 60 * 1000 // 6 hours
 
 interface CachedStars { count: number; fetchedAt: number }

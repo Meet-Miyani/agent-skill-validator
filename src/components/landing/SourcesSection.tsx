@@ -36,8 +36,8 @@ export function SourcesSection() {
       <div className="mx-auto grid max-w-7xl gap-8 lg:grid-cols-[0.8fr_1fr] lg:items-start">
         <div>
           <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-zinc-500">Sources</p>
-          <h2 className="mt-3 max-w-xl text-3xl font-semibold tracking-[-0.035em] text-zinc-950 sm:text-4xl">Grounded in public skill documentation.</h2>
-          <p className="mt-4 max-w-xl text-base leading-7 text-zinc-600">Official references are surfaced in the report where they inform checks. Heuristic and internal parity checks are labeled separately.</p>
+          <h2 className="mt-3 max-w-xl text-3xl font-semibold tracking-[-0.035em] text-zinc-950 sm:text-4xl">Grounded in public agent skill guidance.</h2>
+          <p className="mt-4 max-w-xl text-base leading-7 text-zinc-600">Official references are surfaced in the report where they inform checks. Heuristic and internal parity checks are labeled separately so the checker stays transparent.</p>
         </div>
         <div className="grid gap-3 sm:grid-cols-2">
           {SOURCES.map((source) => <SourceLink key={source.href} {...source} />)}

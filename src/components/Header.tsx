@@ -71,7 +71,7 @@ export function Header({
           </div>
           <div className="min-w-0">
             <div className="flex min-w-0 flex-wrap items-center gap-2">
-              <h1 className="truncate text-[15px] font-semibold tracking-tight text-zinc-950 dark:text-white">Agent Skill Check</h1>
+              <h1 className="truncate text-[15px] font-semibold tracking-tight text-zinc-950 dark:text-white">SkillLint</h1>
               <span className={`rounded-full border px-2 py-0.5 text-[10px] font-semibold uppercase tracking-[0.10em] ${resultTone(report.result)}`}>{report.result.replace(/_/g, " ")}</span>
               {notice && <span className="animate-toast-enter rounded-full border border-lime-300 bg-lime-100 px-2 py-0.5 text-[11px] font-semibold text-zinc-950 dark:border-lime-200/30 dark:bg-lime-200/10 dark:text-lime-100">{notice}</span>}
             </div>

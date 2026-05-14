@@ -5,8 +5,8 @@ import { HeroSection } from "./HeroSection"
 import { TrustBar, WhatGetsScanned, ChecksAndWorkflow } from "./FeaturesSection"
 import { SourcesSection } from "./SourcesSection"
 
-const GITHUB_URL = "https://github.com/Meet-Miyani/agent-skill-check"
-const GITHUB_API = "https://api.github.com/repos/Meet-Miyani/agent-skill-check"
+const GITHUB_URL = "https://github.com/Meet-Miyani/agent-skill-validator"
+const GITHUB_API = "https://api.github.com/repos/Meet-Miyani/agent-skill-validator"
 
 interface Props {
   loading: boolean
@@ -15,6 +15,7 @@ interface Props {
   error: string | null
   darkMode: boolean
   onToggleDarkMode: () => void
+  onLoadSample: () => void
   onDragActiveChange: (active: boolean) => void
   onFilesSelected: (files: File[]) => void
   onDropFiles: (event: DragEvent<HTMLDivElement>) => void
@@ -22,7 +23,7 @@ interface Props {
 
 export function UploadDropzone({
   loading, loadingStatusText = "Reading package...",
-  dragActive, error, darkMode, onToggleDarkMode,
+  dragActive, error, darkMode, onToggleDarkMode, onLoadSample,
   onDragActiveChange, onFilesSelected, onDropFiles,
 }: Props) {
   const stars = useGitHubStars(GITHUB_API)
@@ -36,8 +37,8 @@ export function UploadDropzone({
               <FileSearch className="h-4 w-4" />
             </span>
             <span>
-              <span className={`block text-sm font-semibold tracking-tight ${darkMode ? "text-white" : "text-zinc-950"}`}>Agent Skill Check</span>
-              <span className={`hidden text-xs sm:block ${darkMode ? "text-zinc-500" : "text-zinc-600"}`}>Browser validator for skill packages</span>
+              <span className={`block text-sm font-semibold tracking-tight ${darkMode ? "text-white" : "text-zinc-950"}`}>SkillLint</span>
+              <span className={`hidden text-xs sm:block ${darkMode ? "text-zinc-500" : "text-zinc-600"}`}>AI skill checker & agent skill validator</span>
             </span>
           </a>
 
@@ -79,6 +80,7 @@ export function UploadDropzone({
         dragActive={dragActive}
         error={error}
         darkMode={darkMode}
+        onLoadSample={onLoadSample}
         onDragActiveChange={onDragActiveChange}
         onFilesSelected={onFilesSelected}
         onDropFiles={onDropFiles}
@@ -90,7 +92,7 @@ export function UploadDropzone({
 
       <footer className={`border-t ${darkMode ? "border-white/10 bg-zinc-950" : "border-zinc-900/10 bg-[#fbf7ea]"}`}>
         <div className={`mx-auto flex max-w-7xl flex-col gap-3 px-4 py-6 text-sm sm:flex-row sm:items-center sm:justify-between sm:px-6 lg:px-8 ${darkMode ? "text-zinc-500" : "text-zinc-600"}`}>
-          <p>Made by Meet Miyani for open-source agent skill authors.</p>
+          <p>Independent browser-based validator for AI agent skills.</p>
           <div className="flex flex-wrap items-center gap-4">
             <span>Local browser validation</span>
             <a
