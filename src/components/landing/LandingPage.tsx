@@ -11,8 +11,8 @@ const GITHUB_URL = `https://github.com/${GITHUB_REPO}`
 const GITHUB_API = `https://api.github.com/repos/${GITHUB_REPO}`
 
 interface Props {
-  loading: boolean
-  loadingStatusText?: string
+  busy: boolean
+  busyStatusText?: string
   dragActive: boolean
   error: string | null
   darkMode: boolean
@@ -24,7 +24,7 @@ interface Props {
 }
 
 export function UploadDropzone({
-  loading, loadingStatusText = "Reading package...",
+  busy, busyStatusText = "Reading package...",
   dragActive, error, darkMode, onToggleDarkMode, onLoadSample,
   onDragActiveChange, onFilesSelected, onDropFiles,
 }: Props) {
@@ -77,8 +77,8 @@ export function UploadDropzone({
       </header>
 
       <HeroSection
-        loading={loading}
-        loadingStatusText={loadingStatusText}
+        busy={busy}
+        busyStatusText={busyStatusText}
         dragActive={dragActive}
         error={error}
         onLoadSample={onLoadSample}

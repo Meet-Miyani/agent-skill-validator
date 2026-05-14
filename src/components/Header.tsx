@@ -92,7 +92,9 @@ export function Header({
           <HeaderButton onClick={onToggleDarkMode} tone="ghost" label={darkMode ? "Switch to light mode" : "Switch to dark mode"}>
             {darkMode ? <Sun className="h-3.5 w-3.5" /> : <Moon className="h-3.5 w-3.5" />}
           </HeaderButton>
-          <HeaderButton onClick={onStartOver} tone="ghost" label="Reset"><RefreshCw className="h-3.5 w-3.5" /></HeaderButton>
+          <HeaderButton onClick={onStartOver} tone="ghost" label="Reset and return to landing">
+            <RefreshCw className="h-3.5 w-3.5" /> Reset
+          </HeaderButton>
         </div>
       </div>
     </header>

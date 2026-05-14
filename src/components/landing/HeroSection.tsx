@@ -21,8 +21,8 @@ function ProofRow({ icon, title, detail }: { icon: React.ReactNode; title: strin
 }
 
 interface Props {
-  loading: boolean
-  loadingStatusText: string
+  busy: boolean
+  busyStatusText: string
   dragActive: boolean
   error: string | null
   onLoadSample: () => void

@@ -21,6 +21,11 @@ function isSkillArchiveFileName(name: string): boolean {
   return /\.(zip|skill)$/i.test(name);
 }
 
+// Optional hook for future folder progress UX without changing traversal again.
+export type ReadDroppedDataSnapshotOptions = {
+  onEntryRead?: (path: string) => void;
+};
+
 async function readFileAsUploadSkill(
   file: File,
   path = (file as BrowserFileWithRelativePath).webkitRelativePath || file.name,
@@ -93,18 +98,25 @@ export async function readBrowserFiles(
 async function traverseFileEntry(
   fileEntry: DroppedFileEntry,
   capturedFile?: File | null,
+  options: ReadDroppedDataSnapshotOptions = {},
 ): Promise<UploadSkillFile> {
   const path = (fileEntry.fullPath || capturedFile?.name || fileEntry.name).replace(
     /^\//,
     "",
   );
 
-  if (capturedFile) return readFileAsUploadSkill(capturedFile, path);
+  if (capturedFile) {
+    const skillFile = await readFileAsUploadSkill(capturedFile, path);
+    options.onEntryRead?.(skillFile.path);
+    return skillFile;
+  }
 
   return new Promise((resolve, reject) => {
     fileEntry.file(async (file: File) => {
       try {
-        resolve(await readFileAsUploadSkill(file, path));
+        const skillFile = await readFileAsUploadSkill(file, path);
+        options.onEntryRead?.(skillFile.path);
+        resolve(skillFile);
       } catch (error) {
         reject(error);
       }
@@ -114,6 +126,7 @@ async function traverseFileEntry(
 
 async function traverseDirectoryEntry(
   directoryEntry: DroppedDirectoryEntry,
+  options: ReadDroppedDataSnapshotOptions = {},
 ): Promise<UploadSkillFile[]> {
   const reader = directoryEntry.createReader();
   const entries: DroppedEntry[] = [];
@@ -130,8 +143,8 @@ async function traverseDirectoryEntry(
   await readBatch();
   const nested = await Promise.all(
     entries.map(async (entry) => {
-      if (isDirectoryEntry(entry)) return traverseDirectoryEntry(entry);
-      if (isFileEntry(entry)) return [await traverseFileEntry(entry)];
+      if (isDirectoryEntry(entry)) return traverseDirectoryEntry(entry, options);
+      if (isFileEntry(entry)) return [await traverseFileEntry(entry, undefined, options)];
       return [];
     }),
   );
@@ -140,6 +153,7 @@ async function traverseDirectoryEntry(
 
 export async function readDroppedDataSnapshot(
   snapshot: DroppedDataSnapshot,
+  options: ReadDroppedDataSnapshotOptions = {},
 ): Promise<UploadSkillFile[]> {
   const hasEntries = snapshot.items.some((item) => item.entry !== null);
 
@@ -148,10 +162,10 @@ export async function readDroppedDataSnapshot(
   const nested = await Promise.all(
     snapshot.items.map(async ({ entry, file }) => {
       if (!entry) return [];
-      if (isDirectoryEntry(entry)) return traverseDirectoryEntry(entry);
+      if (isDirectoryEntry(entry)) return traverseDirectoryEntry(entry, options);
       if (isFileEntry(entry)) {
         if (isSkillArchiveFileName(entry.name) && file) return readZipSkill(file);
-        return [await traverseFileEntry(entry, file)];
+        return [await traverseFileEntry(entry, file, options)];
       }
       return [];
     }),

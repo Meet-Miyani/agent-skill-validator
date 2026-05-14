@@ -2,6 +2,7 @@ import React, {
   useCallback,
   useEffect,
   useMemo,
+  useRef,
   useState,
   type DragEvent,
 } from "react";
@@ -11,7 +12,7 @@ import { Header } from "./components/Header";
 import { FileEditor } from "./components/FileEditor";
 import { FileTreePanel } from "./components/FileTree";
 import { ReportTab } from "./components/ReportTab";
-import { ReportSidebar } from "./components/ReportSidebar";
+import { ReportSidebar, reportViews } from "./components/ReportSidebar";
 import { UploadDropzone } from "./components/UploadDropzone";
 import { WorkspaceTabs, type WorkspaceTab } from "./components/WorkspaceTabs";
 
@@ -41,33 +42,205 @@ async function validateEditableFiles(files: EditableSkillFile[]) {
   return validateSkill(toValidatorFiles(files));
 }
 
+type LandingBusyPhase =
+  | "idle"
+  | "reading-package"
+  | "reading-folder"
+  | "scanning-skill";
+
+type ScreenSurface = "landing" | "workspace";
+type HistoryMode = "push" | "replace" | "none";
+type AppHistoryState =
+  | {
+      app: "skilllint";
+      sessionId: number;
+      page: "landing";
+    }
+  | {
+      app: "skilllint";
+      sessionId: number;
+      page: "report";
+      view: string;
+      sectionId: string | null;
+    }
+  | {
+      app: "skilllint";
+      sessionId: number;
+      page: "file";
+      path: string;
+    };
+
+const reportViewIds = new Set(reportViews.map((view) => view.id));
+
+function isAppHistoryState(value: unknown): value is AppHistoryState {
+  if (!value || typeof value !== "object") return false;
+  const candidate = value as Partial<AppHistoryState>;
+  return candidate.app === "skilllint" && typeof candidate.sessionId === "number";
+}
+
 export default function App() {
   const [files, setFiles] = useState<EditableSkillFile[]>([]);
+  const [screenSurface, setScreenSurface] = useState<ScreenSurface>("landing");
   const [activeTab, setActiveTab] = useState<WorkspaceTab>("report");
   const [openFileTabs, setOpenFileTabs] = useState<string[]>([]);
   const [activeReportView, setActiveReportView] = useState("overview");
   const [activeSectionId, setActiveSectionId] = useState<string | null>(null);
   const [highlight, setHighlight] = useState<IssueLocation | null>(null);
-  const [loading, setLoading] = useState(false);
+  const [landingBusyPhase, setLandingBusyPhase] =
+    useState<LandingBusyPhase>("idle");
   const [error, setError] = useState<string | null>(null);
   const [notice, setNotice] = useState<string | null>(null);
   const [dragActive, setDragActive] = useState(false);
   const [report, setReport] = useState<ValidationReport | null>(null);
-  const [validating, setValidating] = useState(false);
 
   const { darkMode, toggle: toggleDarkMode } = useDarkMode();
   const panels = usePanelResize();
+  const historySessionRef = useRef(0);
+
+  const buildLandingHistoryState = useCallback(
+    (sessionId = historySessionRef.current): AppHistoryState => ({
+      app: "skilllint",
+      sessionId,
+      page: "landing",
+    }),
+    [],
+  );
+
+  const buildReportHistoryState = useCallback(
+    (view: string, sectionId: string | null, sessionId = historySessionRef.current): AppHistoryState => ({
+      app: "skilllint",
+      sessionId,
+      page: "report",
+      view,
+      sectionId,
+    }),
+    [],
+  );
+
+  const buildFileHistoryState = useCallback(
+    (path: string, sessionId = historySessionRef.current): AppHistoryState => ({
+      app: "skilllint",
+      sessionId,
+      page: "file",
+      path,
+    }),
+    [],
+  );
+
+  const writeHistoryState = useCallback((state: AppHistoryState, mode: HistoryMode) => {
+    if (mode === "none") return;
+    if (mode === "push") {
+      window.history.pushState(state, "");
+      return;
+    }
+    window.history.replaceState(state, "");
+  }, []);
+
+  const normalizeReportDestination = useCallback(
+    (view: string, sectionId: string | null) => {
+      if (sectionId) {
+        if (!report || report.sections.some((section) => section.id === sectionId)) {
+          return { view: "section", sectionId };
+        }
+        return { view: "overview", sectionId: null };
+      }
+
+      if (view !== "section" && reportViewIds.has(view)) {
+        return { view, sectionId: null };
+      }
+
+      return { view: "overview", sectionId: null };
+    },
+    [report],
+  );
+
+  const applyLandingSurface = useCallback(() => {
+    setScreenSurface("landing");
+  }, []);
+
+  const applyReportDestination = useCallback((view: string, sectionId: string | null) => {
+    const normalized = normalizeReportDestination(view, sectionId);
+    setScreenSurface("workspace");
+    setActiveTab("report");
+    setActiveReportView(normalized.view);
+    setActiveSectionId(normalized.sectionId);
+    setHighlight(null);
+    return normalized;
+  }, [normalizeReportDestination]);
+
+  const applyFileDestination = useCallback((path: string, line?: number) => {
+    const target = fileByPath(files, path);
+    if (!target) return null;
+
+    setScreenSurface("workspace");
+    setOpenFileTabs((c) => (c.includes(target.path) ? c : [...c, target.path]));
+    setActiveTab(target.path);
+    setHighlight(line ? { path: target.path, line } : { path: target.path });
+    return target.path;
+  }, [files]);
+
+  const replaceWithSafeFallback = useCallback(() => {
+    if (screenSurface === "workspace" && report) {
+      applyReportDestination("overview", null);
+      writeHistoryState(buildReportHistoryState("overview", null), "replace");
+      return;
+    }
+
+    applyLandingSurface();
+    writeHistoryState(buildLandingHistoryState(), "replace");
+  }, [
+    applyLandingSurface,
+    applyReportDestination,
+    buildLandingHistoryState,
+    buildReportHistoryState,
+    report,
+    screenSurface,
+    writeHistoryState,
+  ]);
+
+  const navigateToReport = useCallback((view: string, sectionId: string | null = null, historyMode: HistoryMode = "push") => {
+    const normalized = applyReportDestination(view, sectionId);
+    writeHistoryState(
+      buildReportHistoryState(normalized.view, normalized.sectionId),
+      historyMode,
+    );
+  }, [applyReportDestination, buildReportHistoryState, writeHistoryState]);
+
+  const navigateToFile = useCallback((path: string, line?: number, historyMode: HistoryMode = "push") => {
+    const resolvedPath = applyFileDestination(path, line);
+    if (!resolvedPath) {
+      replaceWithSafeFallback();
+      return false;
+    }
+
+    writeHistoryState(buildFileHistoryState(resolvedPath), historyMode);
+    return true;
+  }, [
+    applyFileDestination,
+    buildFileHistoryState,
+    replaceWithSafeFallback,
+    writeHistoryState,
+  ]);
+
+  const navigateToTab = useCallback((tab: WorkspaceTab, historyMode: HistoryMode = "push") => {
+    if (tab === "report") {
+      navigateToReport(activeSectionId ? "section" : activeReportView, activeSectionId, historyMode);
+      return;
+    }
+
+    void navigateToFile(tab, undefined, historyMode);
+  }, [activeReportView, activeSectionId, navigateToFile, navigateToReport]);
 
   useEffect(() => {
     let cancelled = false;
 
     if (files.length === 0) {
       setReport(null);
-      setValidating(false);
+      setLandingBusyPhase("idle");
       return;
     }
 
-    setValidating(true);
+    setLandingBusyPhase("scanning-skill");
     validateEditableFiles(files)
       .then((nextReport) => {
         if (!cancelled) setReport(nextReport);
@@ -83,7 +256,11 @@ export default function App() {
         }
       })
       .finally(() => {
-        if (!cancelled) setValidating(false);
+        if (!cancelled) {
+          setLandingBusyPhase((current) =>
+            current === "scanning-skill" ? "idle" : current,
+          );
+        }
       });
 
     return () => {
@@ -100,30 +277,21 @@ export default function App() {
     window.setTimeout(() => setNotice((c) => (c === msg ? null : c)), 2600);
   }, []);
 
-  const openFileByPath = useCallback((path: string, line?: number) => {
-    setOpenFileTabs((c) => (c.includes(path) ? c : [...c, path]));
-    setActiveTab(path);
-    setHighlight({ path, line });
-  }, []);
-
-  const openFile = useCallback(
-    (path: string, line?: number) => {
-      const target = fileByPath(files, path);
-      if (target) openFileByPath(target.path, line);
-    },
-    [files, openFileByPath],
-  );
-
   const closeFile = useCallback((path: string) => {
     setOpenFileTabs((c) => c.filter((p) => p !== path));
-    setActiveTab((c) => (c === path ? "report" : c));
-  }, []);
+    if (activeTab === path) {
+      navigateToReport(activeSectionId ? "section" : activeReportView, activeSectionId);
+    }
+  }, [activeReportView, activeSectionId, activeTab, navigateToReport]);
 
   const processFiles = useCallback(
     (nextFiles: EditableSkillFile[]) => {
+      const nextSessionId = historySessionRef.current + 1;
+      historySessionRef.current = nextSessionId;
       const defaultPath =
         nextFiles.find((f) => f.path.toLowerCase() === "skill.md")?.path ??
         nextFiles.find((f) => !f.binary)?.path;
+      setScreenSurface("workspace");
       setFiles(nextFiles);
       setActiveTab("report");
       setActiveReportView("overview");
@@ -132,8 +300,12 @@ export default function App() {
       setHighlight(defaultPath ? { path: defaultPath } : null);
       panels.setLeftPanelCollapsed(false);
       panels.setRightPanelCollapsed(false);
+      writeHistoryState(
+        buildReportHistoryState("overview", null, nextSessionId),
+        "push",
+      );
     },
-    [panels],
+    [buildReportHistoryState, panels, writeHistoryState],
   );
 
   const loadSampleReport = useCallback(() => {
@@ -147,7 +319,8 @@ export default function App() {
 
   const processUpload = useCallback(
     async (uploaded: File[]) => {
-      setLoading(true);
+      let handedOffToValidation = false;
+      setLandingBusyPhase("reading-package");
       setError(null);
       setNotice(null);
       try {
@@ -158,6 +331,7 @@ export default function App() {
         flushSync(() => {
           processFiles(toEditableFiles(pkgFiles));
         });
+        handedOffToValidation = true;
       } catch (err: unknown) {
         setError(
           err instanceof Error
@@ -165,7 +339,7 @@ export default function App() {
             : "Failed to read the uploaded skill package.",
         );
       } finally {
-        setLoading(false);
+        if (!handedOffToValidation) setLandingBusyPhase("idle");
       }
     },
     [processFiles],
@@ -174,10 +348,17 @@ export default function App() {
   const handleDrop = useCallback(
     async (event: DragEvent<HTMLDivElement>) => {
       event.preventDefault();
-      setLoading(true);
+      let handedOffToValidation = false;
       setError(null);
+      setNotice(null);
       try {
         const droppedData = captureDroppedData(event.dataTransfer);
+        const hasDirectoryDrop = droppedData.items.some(
+          ({ entry }) => entry?.isDirectory,
+        );
+        setLandingBusyPhase(
+          hasDirectoryDrop ? "reading-folder" : "reading-package",
+        );
         const { readDroppedDataSnapshot } = await import("./domain/packageIO");
         const pkgFiles = await readDroppedDataSnapshot(droppedData);
         if (pkgFiles.length === 0)
@@ -185,6 +366,7 @@ export default function App() {
         flushSync(() => {
           processFiles(toEditableFiles(pkgFiles));
         });
+        handedOffToValidation = true;
       } catch (err: unknown) {
         setError(
           err instanceof Error
@@ -192,7 +374,7 @@ export default function App() {
             : "Failed to read dropped skill package.",
         );
       } finally {
-        setLoading(false);
+        if (!handedOffToValidation) setLandingBusyPhase("idle");
       }
     },
     [processFiles],
@@ -224,12 +406,12 @@ export default function App() {
         const changed = next.find(
           (f, i) => f.currentContent !== c[i]?.currentContent,
         );
-        if (changed) window.setTimeout(() => openFileByPath(changed.path), 0);
+        if (changed) window.setTimeout(() => navigateToFile(changed.path), 0);
         return next;
       });
       flashNotice("Suggested fix applied");
     },
-    [flashNotice, openFileByPath],
+    [flashNotice, navigateToFile],
   );
 
   const autoLinkRefs = useCallback(() => {
@@ -239,11 +421,11 @@ export default function App() {
         flashNotice("No reference mentions needed auto-linking");
         return c;
       }
-      window.setTimeout(() => openFileByPath("SKILL.md"), 0);
+      window.setTimeout(() => navigateToFile("SKILL.md"), 0);
       flashNotice("Reference mentions converted to links");
       return result.files;
     });
-  }, [flashNotice, openFileByPath]);
+  }, [flashNotice, navigateToFile]);
 
   const copyAiPrompt = useCallback(() => {
     if (!report) return;
@@ -256,15 +438,95 @@ export default function App() {
   }, [files]);
 
   const reset = useCallback(() => {
+    historySessionRef.current += 1;
+    setScreenSurface("landing");
     setFiles([]);
     setActiveTab("report");
     setOpenFileTabs([]);
     setHighlight(null);
     setActiveReportView("overview");
     setActiveSectionId(null);
+    setLandingBusyPhase("idle");
     setError(null);
     setNotice(null);
-  }, []);
+    writeHistoryState(buildLandingHistoryState(historySessionRef.current), "replace");
+  }, [buildLandingHistoryState, writeHistoryState]);
+
+  useEffect(() => {
+    writeHistoryState(buildLandingHistoryState(), "replace");
+  }, [buildLandingHistoryState, writeHistoryState]);
+
+  useEffect(() => {
+    const handlePopState = (event: PopStateEvent) => {
+      const state = event.state;
+      if (!isAppHistoryState(state)) {
+        replaceWithSafeFallback();
+        return;
+      }
+
+      if (state.page === "landing") {
+        applyLandingSurface();
+        return;
+      }
+
+      if (state.sessionId !== historySessionRef.current) {
+        replaceWithSafeFallback();
+        return;
+      }
+
+      if (state.page === "report") {
+        const normalized = applyReportDestination(state.view, state.sectionId);
+        if (
+          normalized.view !== state.view ||
+          normalized.sectionId !== state.sectionId
+        ) {
+          writeHistoryState(
+            buildReportHistoryState(normalized.view, normalized.sectionId),
+            "replace",
+          );
+        }
+        return;
+      }
+
+      if (!applyFileDestination(state.path)) {
+        replaceWithSafeFallback();
+      }
+    };
+
+    window.addEventListener("popstate", handlePopState);
+    return () => window.removeEventListener("popstate", handlePopState);
+  }, [
+    applyFileDestination,
+    applyLandingSurface,
+    applyReportDestination,
+    buildReportHistoryState,
+    replaceWithSafeFallback,
+    writeHistoryState,
+  ]);
+
+  useEffect(() => {
+    if (
+      screenSurface !== "workspace" ||
+      activeTab !== "report" ||
+      !activeSectionId ||
+      !report
+    ) {
+      return;
+    }
+
+    const sectionExists = report.sections.some(
+      (section) => section.id === activeSectionId,
+    );
+    if (!sectionExists) {
+      navigateToReport("overview", null, "replace");
+    }
+  }, [
+    activeSectionId,
+    activeTab,
+    navigateToReport,
+    report,
+    screenSurface,
+  ]);
 
   const activeFile = useMemo(
     () => (activeTab !== "report" ? fileByPath(files, activeTab) : undefined),
@@ -315,15 +577,27 @@ export default function App() {
     return Array.from(lineMap.values()).sort((a, b) => a.line - b.line);
   }, [activeFile, files, report]);
 
+  const showLandingScreen =
+    screenSurface === "landing" ||
+    files.length === 0 ||
+    landingBusyPhase === "reading-package" ||
+    landingBusyPhase === "reading-folder" ||
+    !report;
+  const landingBusy = landingBusyPhase !== "idle";
+  const landingStatusText =
+    landingBusyPhase === "reading-folder"
+      ? "Reading folder…"
+      : landingBusyPhase === "scanning-skill"
+        ? "Scanning skill…"
+        : "Reading package…";
+
   // Upload / loading screen
-  if (files.length === 0 || loading || validating || !report) {
-    const statusText =
-      files.length > 0 ? "Scanning skill…" : "Reading package…";
+  if (showLandingScreen) {
     return (
       <div className={darkMode ? "dark" : ""}>
         <UploadDropzone
-          loading={loading}
-          loadingStatusText={statusText}
+          busy={landingBusy}
+          busyStatusText={landingStatusText}
           dragActive={dragActive}
           error={error}
           darkMode={darkMode}
@@ -362,9 +636,7 @@ export default function App() {
           width={panels.leftPanelWidth}
           onToggleCollapsed={() => panels.setLeftPanelCollapsed((c) => !c)}
           onChangeView={(view, sectionId = null) => {
-            setActiveTab("report");
-            setActiveReportView(view);
-            setActiveSectionId(sectionId);
+            navigateToReport(view, sectionId);
           }}
         />
 
@@ -383,7 +655,7 @@ export default function App() {
             files={files}
             openFileTabs={openFileTabs}
             activeTab={activeTab}
-            onSelectTab={setActiveTab}
+            onSelectTab={navigateToTab}
             onCloseFile={closeFile}
           />
           <div className="min-h-0 flex-1 overflow-hidden">
@@ -394,10 +666,9 @@ export default function App() {
                 activeReportView={activeReportView}
                 activeSectionId={activeSectionId}
                 onChangeView={(view, sectionId = null) => {
-                  setActiveReportView(view);
-                  setActiveSectionId(sectionId);
+                  navigateToReport(view, sectionId);
                 }}
-                onOpenFile={openFile}
+                onOpenFile={navigateToFile}
                 onApplyIssueFix={applyFix}
               />
             ) : (
@@ -429,7 +700,7 @@ export default function App() {
           collapsed={panels.rightPanelCollapsed}
           width={panels.rightPanelWidth}
           onToggleCollapsed={() => panels.setRightPanelCollapsed((c) => !c)}
-          onOpenFile={openFile}
+          onOpenFile={navigateToFile}
         />
       </div>
     </div>

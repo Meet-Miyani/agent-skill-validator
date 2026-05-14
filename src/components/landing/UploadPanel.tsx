@@ -2,8 +2,8 @@ import React, { type ChangeEvent, type DragEvent, type InputHTMLAttributes } fro
 import { FileArchive, FolderOpen, Loader2, LockKeyhole, ScanLine, UploadCloud } from "lucide-react"
 
 interface Props {
-  loading: boolean
-  loadingStatusText: string
+  busy: boolean
+  busyStatusText: string
   dragActive: boolean
   error: string | null
   onDragActiveChange: (active: boolean) => void
@@ -15,7 +15,7 @@ const ACCEPTED_FORMATS = ["ZIP", ".skill", "folder", "SKILL.md"]
 const directoryInputProps = { webkitdirectory: "true" } satisfies InputHTMLAttributes<HTMLInputElement> & { webkitdirectory: string }
 
 export function UploadPanel({
-  loading, loadingStatusText, dragActive, error,
+  busy, busyStatusText, dragActive, error,
   onDragActiveChange, onFilesSelected, onDropFiles,
 }: Props) {
   const handleBrowse = (event: ChangeEvent<HTMLInputElement>) => {
@@ -28,7 +28,11 @@ export function UploadPanel({
     : "border-[color:var(--theme-secondary-action-border)] bg-[color:var(--theme-surface-soft)] hover:border-[color:var(--theme-border-strong)] hover:bg-[color:var(--theme-surface)]"
 
   return (
-    <aside className="relative rounded-[28px] border border-[color:var(--theme-border)] bg-[color:var(--theme-surface)] p-3 shadow-2xl shadow-black/10 backdrop-blur-xl dark:shadow-black/30" aria-label="AI agent skill upload">
+    <aside
+      className="relative rounded-[28px] border border-[color:var(--theme-border)] bg-[color:var(--theme-surface)] p-3 shadow-2xl shadow-black/10 backdrop-blur-xl dark:shadow-black/30"
+      aria-busy={busy}
+      aria-label="AI agent skill upload"
+    >
       <div className="pointer-events-none absolute inset-x-6 top-0 h-px bg-gradient-to-r from-transparent via-white/60 to-transparent" />
 
       <div className="flex items-center justify-between gap-4 px-2 pb-3">
@@ -45,6 +49,7 @@ export function UploadPanel({
         onDragOver={(e) => { e.preventDefault(); onDragActiveChange(true) }}
         onDragLeave={() => onDragActiveChange(false)}
         onDrop={(e) => { onDragActiveChange(false); onDropFiles(e) }}
+        aria-busy={busy}
         className={`relative overflow-hidden rounded-[22px] border border-dashed px-6 py-8 text-center transition-all duration-200 ${drop}`}
       >
         <div className="pointer-events-none absolute inset-0 opacity-60" style={{ backgroundImage: "var(--theme-upload-spotlight)" }} />
@@ -60,12 +65,12 @@ export function UploadPanel({
             <label className="theme-primary-button control-focus button-motion inline-flex min-h-11 cursor-pointer items-center justify-center gap-2 rounded-full px-5 py-2.5 text-sm font-semibold">
               <FileArchive className="h-4 w-4" />
               Browse ZIP / files
-              <input className="hidden" type="file" multiple onChange={handleBrowse} />
+              <input className="hidden" type="file" multiple onChange={handleBrowse} disabled={busy} />
             </label>
             <label className="theme-secondary-button control-focus button-motion inline-flex min-h-11 cursor-pointer items-center justify-center gap-2 rounded-full border px-5 py-2.5 text-sm font-semibold">
               <FolderOpen className="h-4 w-4" />
               Browse folder
-              <input className="hidden" type="file" multiple {...directoryInputProps} onChange={handleBrowse} />
+              <input className="hidden" type="file" multiple {...directoryInputProps} onChange={handleBrowse} disabled={busy} />
             </label>
           </div>
 
@@ -76,10 +81,19 @@ export function UploadPanel({
           </div>
         </div>
 
-        {loading && (
-          <div className="absolute inset-0 flex items-center justify-center rounded-[22px] bg-[color:var(--theme-surface-overlay)] backdrop-blur-sm">
-            <div className="theme-primary-button flex items-center gap-2 rounded-full px-4 py-2 text-sm font-semibold shadow-lg">
-              <Loader2 className="h-4 w-4 animate-spin" /> {loadingStatusText}
+        {busy && (
+          <div className="absolute inset-0 flex items-center justify-center rounded-[22px] bg-[color:var(--theme-surface-overlay)] px-6 backdrop-blur-md">
+            <div
+              role="status"
+              aria-live="polite"
+              className="w-full max-w-xs rounded-[24px] border border-white/20 bg-[color:var(--theme-surface)]/95 px-5 py-4 text-left shadow-2xl"
+            >
+              <div className="theme-primary-button inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-semibold shadow-lg">
+                <Loader2 className="h-4 w-4 animate-spin" /> {busyStatusText}
+              </div>
+              <p className="mt-3 text-sm leading-6 text-[color:var(--theme-text-muted)]">
+                Everything stays local while SkillLint reads your files and prepares the report.
+              </p>
             </div>
           </div>
         )}
