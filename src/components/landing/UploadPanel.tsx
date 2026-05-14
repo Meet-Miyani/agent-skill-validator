@@ -1,5 +1,5 @@
 import React, { type ChangeEvent, type DragEvent } from "react"
-import { FileArchive, Layers3, Loader2, UploadCloud } from "lucide-react"
+import { FileArchive, FolderOpen, Loader2, LockKeyhole, ScanLine, UploadCloud } from "lucide-react"
 
 interface Props {
   loading: boolean
@@ -12,6 +12,8 @@ interface Props {
   onDropFiles: (event: DragEvent<HTMLDivElement>) => void
 }
 
+const ACCEPTED_FORMATS = ["ZIP", ".skill", "folder", "SKILL.md"]
+
 export function UploadPanel({
   loading, loadingStatusText, dragActive, error, darkMode,
   onDragActiveChange, onFilesSelected, onDropFiles,
@@ -22,51 +24,68 @@ export function UploadPanel({
   }
 
   const shell = darkMode
-    ? "border-white/10 bg-white/5 shadow-2xl shadow-slate-950/40"
-    : "border-slate-200 bg-white/80 shadow-2xl shadow-blue-950/10"
+    ? "border-white/10 bg-zinc-950/80 shadow-2xl shadow-black/30"
+    : "border-zinc-900/10 bg-[#fffdf6]/[0.92] shadow-2xl shadow-zinc-900/10"
   const drop = dragActive
     ? darkMode
-      ? "scale-[1.01] border-violet-400 bg-violet-400/10 shadow-lg"
-      : "scale-[1.01] border-blue-500 bg-blue-50 shadow-lg"
+      ? "border-lime-300 bg-lime-300/10 ring-4 ring-lime-300/10"
+      : "border-lime-600 bg-lime-100/70 ring-4 ring-lime-300/40"
     : darkMode
-      ? "border-white/20 bg-white/5 hover:border-white/30 hover:bg-white/10"
-      : "border-slate-200 bg-slate-50/80 hover:border-blue-300 hover:bg-blue-50/60"
+      ? "border-white/15 bg-white/[0.03] hover:border-lime-300/50 hover:bg-lime-300/[0.05]"
+      : "border-zinc-900/15 bg-white/70 hover:border-zinc-900/35 hover:bg-white"
 
   return (
-    <div className={`rounded-[1.75rem] border p-4 backdrop-blur-xl ${shell}`}>
+    <aside className={`relative rounded-[28px] border p-3 backdrop-blur-xl ${shell}`} aria-label="Skill package upload">
+      <div className="pointer-events-none absolute inset-x-6 top-0 h-px bg-gradient-to-r from-transparent via-white/60 to-transparent" />
+
+      <div className="flex items-center justify-between gap-4 px-2 pb-3">
+        <div>
+          <p className={`text-[11px] font-semibold uppercase tracking-[0.18em] ${darkMode ? "text-lime-200/70" : "text-zinc-500"}`}>Local audit input</p>
+          <h2 className={`mt-1 text-lg font-semibold tracking-tight ${darkMode ? "text-white" : "text-zinc-950"}`}>Drop the package here.</h2>
+        </div>
+        <div className={`flex h-10 w-10 items-center justify-center rounded-2xl border ${darkMode ? "border-white/10 bg-white/5 text-lime-200" : "border-zinc-900/10 bg-zinc-950 text-lime-200"}`}>
+          <ScanLine className="h-5 w-5" />
+        </div>
+      </div>
+
       <div
         onDragOver={(e) => { e.preventDefault(); onDragActiveChange(true) }}
         onDragLeave={() => onDragActiveChange(false)}
         onDrop={(e) => { onDragActiveChange(false); onDropFiles(e) }}
-        className={`relative rounded-2xl border-2 border-dashed p-8 text-center transition-all duration-200 ${drop}`}
+        className={`relative overflow-hidden rounded-[22px] border border-dashed px-6 py-8 text-center transition-all duration-200 ${drop}`}
       >
-        <div className={`mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-blue-600 to-violet-600 shadow-lg transition-transform duration-200 ${dragActive ? "-translate-y-1" : ""}`}>
-          <UploadCloud className="h-7 w-7 text-white" />
-        </div>
+        <div className={`pointer-events-none absolute inset-0 opacity-60 ${darkMode ? "bg-[radial-gradient(circle_at_50%_0%,rgba(190,242,100,0.12),transparent_46%)]" : "bg-[radial-gradient(circle_at_50%_0%,rgba(132,204,22,0.18),transparent_48%)]"}`} />
+        <div className="relative">
+          <div className={`mx-auto flex h-16 w-16 items-center justify-center rounded-3xl border transition-transform duration-200 ${dragActive ? "-translate-y-1 rotate-2" : ""} ${darkMode ? "border-lime-200/20 bg-lime-200/10 text-lime-200" : "border-zinc-900/10 bg-zinc-950 text-lime-200 shadow-lg shadow-zinc-900/10"}`}>
+            <UploadCloud className="h-8 w-8" />
+          </div>
 
-        <p className={`mt-4 text-lg font-bold ${darkMode ? "text-white" : "text-slate-950"}`}>
-          Drop a ZIP, .skill, folder, or SKILL.md
-        </p>
-        <p className={`mx-auto mt-2 max-w-xs text-sm ${darkMode ? "text-white/50" : "text-slate-500"}`}>
-          Validation runs entirely in your browser — nothing is uploaded to a server.
-        </p>
+          <p className={`mt-5 text-xl font-semibold tracking-tight ${darkMode ? "text-white" : "text-zinc-950"}`}>Scan a skill package</p>
+          <p className={`mx-auto mt-2 max-w-sm text-sm leading-6 ${darkMode ? "text-zinc-400" : "text-zinc-600"}`}>Drag files in, or choose a ZIP, .skill archive, folder, or single SKILL.md file. Validation runs entirely in this browser.</p>
 
-        <div className="mt-6 flex flex-wrap justify-center gap-3">
-          <label className="button-motion control-focus inline-flex min-h-11 cursor-pointer items-center gap-2 rounded-xl bg-blue-600 px-5 py-2.5 text-sm font-bold text-white shadow-lg shadow-blue-600/20 hover:bg-blue-700">
-            <FileArchive className="h-4 w-4" />
-            Browse ZIP / files
-            <input className="hidden" type="file" multiple onChange={handleBrowse} />
-          </label>
-          <label className={`button-motion control-focus inline-flex min-h-11 cursor-pointer items-center gap-2 rounded-xl border px-5 py-2.5 text-sm font-bold ${darkMode ? "border-white/20 bg-white/10 text-white hover:bg-white/[0.15]" : "border-slate-200 bg-white text-slate-800 shadow-sm hover:bg-slate-50"}`}>
-            <Layers3 className="h-4 w-4" />
-            Browse folder
-            <input className="hidden" type="file" multiple {...({ webkitdirectory: "true" } as any)} onChange={handleBrowse} />
-          </label>
+          <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:justify-center">
+            <label className={`control-focus button-motion inline-flex min-h-11 cursor-pointer items-center justify-center gap-2 rounded-full px-5 py-2.5 text-sm font-semibold ${darkMode ? "bg-lime-200 text-zinc-950 hover:bg-lime-100" : "bg-zinc-950 text-white hover:bg-zinc-800"}`}>
+              <FileArchive className="h-4 w-4" />
+              Browse ZIP / files
+              <input className="hidden" type="file" multiple onChange={handleBrowse} />
+            </label>
+            <label className={`control-focus button-motion inline-flex min-h-11 cursor-pointer items-center justify-center gap-2 rounded-full border px-5 py-2.5 text-sm font-semibold ${darkMode ? "border-white/15 bg-white/5 text-white hover:bg-white/10" : "border-zinc-900/15 bg-white/75 text-zinc-900 hover:bg-white"}`}>
+              <FolderOpen className="h-4 w-4" />
+              Browse folder
+              <input className="hidden" type="file" multiple {...({ webkitdirectory: "true" } as any)} onChange={handleBrowse} />
+            </label>
+          </div>
+
+          <div className="mt-6 flex flex-wrap justify-center gap-2">
+            {ACCEPTED_FORMATS.map((format) => (
+              <span key={format} className={`rounded-full border px-2.5 py-1 text-xs font-medium ${darkMode ? "border-white/10 bg-white/5 text-zinc-300" : "border-zinc-900/10 bg-[#f7f1df] text-zinc-600"}`}>{format}</span>
+            ))}
+          </div>
         </div>
 
         {loading && (
-          <div className={`absolute inset-0 flex items-center justify-center rounded-2xl backdrop-blur-sm ${darkMode ? "bg-slate-950/80" : "bg-white/80"}`}>
-            <div className={`flex items-center gap-2 rounded-full px-4 py-2 text-sm font-bold shadow ${darkMode ? "bg-white text-slate-900" : "bg-slate-950 text-white"}`}>
+          <div className={`absolute inset-0 flex items-center justify-center rounded-[22px] backdrop-blur-sm ${darkMode ? "bg-zinc-950/[0.82]" : "bg-[#fffdf6]/[0.85]"}`}>
+            <div className={`flex items-center gap-2 rounded-full px-4 py-2 text-sm font-semibold shadow-lg ${darkMode ? "bg-lime-200 text-zinc-950" : "bg-zinc-950 text-white"}`}>
               <Loader2 className="h-4 w-4 animate-spin" /> {loadingStatusText}
             </div>
           </div>
@@ -74,18 +93,15 @@ export function UploadPanel({
       </div>
 
       {error && (
-        <p className={`mt-4 rounded-xl border px-4 py-3 text-sm font-medium ${darkMode ? "border-red-400/30 bg-red-500/15 text-red-300" : "border-red-200 bg-red-50 text-red-700"}`}>
+        <p className={`mt-4 rounded-2xl border px-4 py-3 text-sm font-medium ${darkMode ? "border-red-300/25 bg-red-500/10 text-red-200" : "border-red-200 bg-red-50 text-red-700"}`}>
           {error}
         </p>
       )}
 
-      <div className="mt-4 grid grid-cols-3 gap-2 text-center text-xs font-bold">
-        {[["Private"], ["Instant"], ["Editable"]].map(([label]) => (
-          <div key={label} className={`rounded-lg border py-2 ${darkMode ? "border-white/10 bg-white/5 text-white/60" : "border-slate-200 bg-white/75 text-slate-500"}`}>
-            {label}
-          </div>
-        ))}
+      <div className={`mt-3 flex items-start gap-3 rounded-2xl border px-4 py-3 ${darkMode ? "border-white/10 bg-white/[0.03] text-zinc-400" : "border-zinc-900/10 bg-[#f9f4e7] text-zinc-600"}`}>
+        <LockKeyhole className={`mt-0.5 h-4 w-4 shrink-0 ${darkMode ? "text-lime-200" : "text-zinc-900"}`} />
+        <p className="text-xs leading-5"><span className="font-semibold">No upload endpoint.</span> Files are parsed locally, edited locally, and exported from memory.</p>
       </div>
-    </div>
+    </aside>
   )
 }

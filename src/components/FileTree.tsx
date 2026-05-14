@@ -2,7 +2,7 @@ import React from "react"
 import { ChevronLeft, ChevronRight, Circle, FileCode2, Folder, FolderOpen } from "lucide-react"
 import type { EditableSkillFile, FileIssueMeta } from "../domain/files"
 import { extensionLabel, hasTextChanges, shortFileName } from "../domain/files"
-import { severityClasses } from "./ui"
+import { severityClasses, severityDotClass } from "./ui"
 
 type TreeNode = {
   name: string
@@ -34,7 +34,7 @@ function Badge({ meta }: { meta?: FileIssueMeta }) {
   if (!meta) return null
   const count = meta.errors + meta.warnings + meta.info
   if (count === 0) return null
-  return <span className={`ml-auto rounded-md border px-1.5 py-0.5 text-[11px] font-black ${severityClasses(meta.severity, true)}`}>{count}</span>
+  return <span className={`rounded-md border px-1.5 py-0.5 text-[10px] font-semibold ${severityClasses(meta.severity, true)}`}>{count}</span>
 }
 
 function TreeRow({
@@ -61,19 +61,21 @@ function TreeRow({
     const active = node.path === activeFilePath
     const file = fileMap.get(node.path)
     const changed = file ? hasTextChanges(file) : false
+    const meta = issueMeta[node.path]
 
     return (
       <button
         onClick={() => onOpenFile(node.path)}
-        className={`button-motion control-focus flex min-h-9 w-full items-center gap-2 rounded-xl px-2 py-2 text-left text-sm ${active ? "bg-blue-600 text-white shadow-sm shadow-blue-600/20" : "text-slate-700 hover:bg-white hover:shadow-sm"}`}
-        style={{ paddingLeft: 10 + depth * 14 }}
+        className={`button-motion control-focus group flex min-h-8 w-full items-center gap-2 rounded-lg px-2 py-1.5 text-left text-[13px] ${active ? "bg-zinc-950 text-lime-200 shadow-sm dark:bg-lime-200 dark:text-zinc-950" : "text-zinc-600 hover:bg-white hover:text-zinc-950 hover:shadow-sm dark:text-zinc-300 dark:hover:bg-zinc-900 dark:hover:text-zinc-50"}`}
+        style={{ paddingLeft: 10 + depth * 12 }}
         title={node.path}
       >
-        <FileCode2 className={`h-4 w-4 shrink-0 ${active ? "text-white/70" : "text-slate-500"}`} />
+        <FileCode2 className={`h-3.5 w-3.5 shrink-0 ${active ? "text-current opacity-65" : "text-zinc-400"}`} />
         <span className="min-w-0 flex-1 truncate font-medium">{shortFileName(node.path)}</span>
-        {changed && <Circle className={`h-2.5 w-2.5 shrink-0 fill-current ${active ? "text-white" : "text-blue-500"}`} aria-label="Modified" />}
-        <span className={`rounded px-1.5 py-0.5 text-[10px] font-bold uppercase ${active ? "bg-white/[0.15] text-white/80" : "bg-slate-100 text-slate-500"}`}>{extensionLabel(node.path)}</span>
-        {!active && <Badge meta={issueMeta[node.path]} />}
+        {changed && <Circle className={`h-2 w-2 shrink-0 fill-current ${active ? "text-current" : "text-sky-500"}`} aria-label="Modified" />}
+        {meta && <span className={`h-1.5 w-1.5 shrink-0 rounded-full ${severityDotClass(meta.severity)}`} />}
+        <span className={`rounded px-1.5 py-0.5 text-[10px] font-medium uppercase ${active ? "bg-white/[0.16] text-current dark:bg-zinc-950/10" : "bg-zinc-100 text-zinc-500 dark:bg-zinc-800 dark:text-zinc-400"}`}>{extensionLabel(node.path)}</span>
+        {!active && <Badge meta={meta} />}
       </button>
     )
   }
@@ -81,12 +83,12 @@ function TreeRow({
   return (
     <div>
       {node.name && (
-        <div className="mt-3 flex items-center gap-2 px-2 py-1 text-xs font-black uppercase tracking-wide text-slate-500" style={{ paddingLeft: 10 + depth * 14 }}>
-          {children.length > 0 ? <FolderOpen className="h-4 w-4" /> : <Folder className="h-4 w-4" />}
+        <div className="mt-2 flex items-center gap-1.5 px-2 py-1 text-[11px] font-semibold uppercase tracking-[0.12em] text-zinc-400 dark:text-zinc-500" style={{ paddingLeft: 10 + depth * 12 }}>
+          {children.length > 0 ? <FolderOpen className="h-3.5 w-3.5" /> : <Folder className="h-3.5 w-3.5" />}
           <span className="truncate">{node.name}</span>
         </div>
       )}
-      <div className="space-y-1">
+      <div className="space-y-0.5">
         {children.map((child) => (
           <TreeRow
             key={child.path}
@@ -127,46 +129,36 @@ export function FileTreePanel({
 
   if (collapsed) {
     return (
-      <aside className="flex w-12 shrink-0 flex-col items-center border-l border-slate-200/80 bg-white/80 py-3 shadow-sm backdrop-blur-xl">
-        <button onClick={onToggleCollapsed} className="button-motion control-focus flex h-9 w-9 items-center justify-center rounded-xl text-slate-600 hover:bg-slate-100" title="Expand files panel" aria-label="Expand files panel">
+      <aside className="flex w-11 shrink-0 flex-col items-center border-l border-zinc-200 bg-white/75 py-2 shadow-sm backdrop-blur-xl dark:border-zinc-800 dark:bg-zinc-950/80">
+        <button onClick={onToggleCollapsed} className="button-motion control-focus flex h-8 w-8 items-center justify-center rounded-lg text-zinc-500 hover:bg-zinc-100 dark:hover:bg-zinc-800" title="Expand files panel" aria-label="Expand files panel">
           <ChevronLeft className="h-4 w-4" />
         </button>
         <div className="mt-4 vertical-rail-label">Files</div>
-        <span className="mt-4 rounded-full border border-slate-200 bg-white px-2 py-1 text-[11px] font-black text-slate-600 shadow-sm" title="Files in package">{files.length}</span>
-        {dirtyCount > 0 && <span className="mt-2 h-2.5 w-2.5 rounded-full bg-blue-500" title="Modified files" />}
+        <span className="mt-4 rounded-full border border-zinc-200 bg-white px-1.5 py-0.5 text-[10px] font-semibold text-zinc-600 shadow-sm dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-300" title="Files in package">{files.length}</span>
+        {dirtyCount > 0 && <span className="mt-2 h-2 w-2 rounded-full bg-sky-500" title="Modified files" />}
       </aside>
     )
   }
 
   return (
-    <aside className="flex shrink-0 flex-col border-l border-slate-200/80 bg-white/80 shadow-sm backdrop-blur-xl" style={{ width }}>
-      <div className="border-b border-slate-200/80 px-4 py-4">
-        <div className="flex items-start justify-between gap-3">
-          <div>
+    <aside className="flex shrink-0 flex-col border-l border-zinc-200 bg-white/75 shadow-sm backdrop-blur-xl dark:border-zinc-800 dark:bg-zinc-950/80" style={{ width }}>
+      <div className="border-b border-zinc-200 px-3 py-3 dark:border-zinc-800">
+        <div className="flex items-center justify-between gap-2">
+          <div className="min-w-0">
             <div className="muted-label">Package</div>
-            <h2 className="mt-1 font-black text-slate-950">Files</h2>
-            <p className="mt-1 text-xs leading-5 text-slate-500">Open files for inline edits and issue review.</p>
+            <h2 className="mt-0.5 truncate text-sm font-semibold text-zinc-950 dark:text-zinc-50">Files</h2>
           </div>
-          <div className="flex items-center gap-1">
-            <span className="rounded-full border border-slate-200 bg-white px-2 py-1 text-xs font-bold text-slate-600 shadow-sm">{files.length}</span>
-            <button onClick={onToggleCollapsed} className="button-motion control-focus flex h-8 w-8 items-center justify-center rounded-lg text-slate-500 hover:bg-slate-100 hover:text-slate-800" title="Collapse files panel" aria-label="Collapse files panel">
-              <ChevronRight className="h-4 w-4" />
-            </button>
-          </div>
+          <button onClick={onToggleCollapsed} className="button-motion control-focus flex h-8 w-8 items-center justify-center rounded-lg text-zinc-500 hover:bg-zinc-100 hover:text-zinc-800 dark:hover:bg-zinc-800 dark:hover:text-zinc-100" title="Collapse files panel" aria-label="Collapse files panel">
+            <ChevronRight className="h-4 w-4" />
+          </button>
         </div>
-        <div className="mt-3 grid grid-cols-2 gap-2 text-xs">
-          <div className="rounded-xl border border-slate-200 bg-white/75 px-3 py-2 shadow-sm">
-            <div className="font-black text-slate-900">{issueFileCount}</div>
-            <div className="text-slate-500">with issues</div>
-          </div>
-          <div className="rounded-xl border border-slate-200 bg-white/75 px-3 py-2 shadow-sm">
-            <div className="font-black text-slate-900">{dirtyCount}</div>
-            <div className="text-slate-500">modified</div>
-          </div>
+        <div className="mt-2 flex flex-wrap gap-1.5 text-[11px]">
+          <span className="rounded-full border border-zinc-200 bg-white px-2 py-0.5 font-semibold text-zinc-600 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-300">{files.length} files</span>
+          <span className="rounded-full border border-zinc-200 bg-white px-2 py-0.5 font-semibold text-zinc-600 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-300">{issueFileCount} issue files</span>
+          {dirtyCount > 0 && <span className="rounded-full border border-sky-200 bg-sky-50 px-2 py-0.5 font-semibold text-sky-700 dark:border-sky-500/30 dark:bg-sky-500/10 dark:text-sky-200">{dirtyCount} changed</span>}
         </div>
-        {dirtyCount > 0 && <p className="mt-3 rounded-xl border border-blue-200 bg-blue-50 px-3 py-2 text-xs font-medium text-blue-700">Export ZIP to keep local edits.</p>}
       </div>
-      <div className="min-h-0 flex-1 overflow-auto p-3">
+      <div className="min-h-0 flex-1 overflow-auto p-2">
         <TreeRow node={tree} depth={0} activeFilePath={activeFilePath} issueMeta={issueMeta} fileMap={fileMap} onOpenFile={onOpenFile} />
       </div>
     </aside>

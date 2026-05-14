@@ -224,7 +224,7 @@ export default function App() {
   if (!report) return null
 
   return (
-    <div className={`flex h-screen min-h-0 flex-col overflow-hidden ${darkMode ? "dark report-app-frame text-slate-100" : "report-app-frame text-slate-900"}`}>
+    <div className={`flex h-screen min-h-0 flex-col overflow-hidden ${darkMode ? "dark report-app-frame text-zinc-100" : "report-app-frame text-zinc-900"}`}>
       <Header
         report={report}
         notice={notice}
@@ -256,7 +256,7 @@ export default function App() {
           <div className="panel-resize-handle" role="separator" aria-orientation="vertical" aria-label="Resize review panel" onPointerDown={(e) => panels.beginResize("left", e)} />
         )}
 
-        <section className="flex min-w-0 flex-1 flex-col border-r border-slate-200/80">
+        <section className="flex min-w-0 flex-1 flex-col border-r border-zinc-200/80">
           <WorkspaceTabs files={files} openFileTabs={openFileTabs} activeTab={activeTab} onSelectTab={setActiveTab} onCloseFile={closeFile} />
           <div className="min-h-0 flex-1 overflow-hidden">
             {activeTab === "report" ? (

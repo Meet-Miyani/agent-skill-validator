@@ -1,8 +1,10 @@
-import React from "react"
+import React, { useMemo, useState } from "react"
 import type { ValidationIssue, ValidationReport } from "../../validator/types"
 import type { EditableSkillFile } from "../../domain/files"
 import { anchorForIssue, issueFixPreview, resolveIssueLocation } from "../../domain/issues"
-import { SeverityIcon, StatusPill, severityBorderClass } from "../ui"
+import { CountPill, EmptyState, SeverityIcon, StatusPill, Surface, severityBorderClass } from "../ui"
+
+type IssueFilter = "actionable" | "errors" | "warnings" | "fixable" | "all"
 
 interface IssueCardProps {
   issue: ValidationIssue
@@ -11,7 +13,6 @@ interface IssueCardProps {
   onApplyFix: (issue: ValidationIssue) => void
 }
 
-/** Expandable card for a single validation issue. */
 export function IssueCard({ issue, files, onOpenFile, onApplyFix }: IssueCardProps) {
   const location = resolveIssueLocation(issue, files)
   const fixPreview = issueFixPreview(issue, files)
@@ -19,45 +20,41 @@ export function IssueCard({ issue, files, onOpenFile, onApplyFix }: IssueCardPro
   return (
     <article
       id={anchorForIssue(issue)}
-      className={`panel-surface scroll-mt-24 overflow-hidden border-l-4 ${severityBorderClass(issue.severity)}`}
+      className={`panel-surface scroll-mt-20 overflow-hidden border-l-4 ${severityBorderClass(issue.severity)}`}
     >
-      <div className="p-5">
+      <div className="p-4">
         <div className="flex items-start gap-3">
-          <SeverityIcon severity={issue.type} className="mt-0.5 h-5 w-5 shrink-0" />
+          <SeverityIcon severity={issue.type} className="mt-0.5 h-4 w-4 shrink-0" />
           <div className="min-w-0 flex-1">
-            {/* Title row */}
             <div className="flex flex-wrap items-center gap-2">
-              <h4 className="font-bold text-slate-900">{issue.message}</h4>
+              <h4 className="min-w-0 flex-1 text-sm font-semibold text-zinc-950 dark:text-zinc-50">{issue.message}</h4>
               <StatusPill severity={issue.severity}>{issue.type}</StatusPill>
             </div>
 
-            {/* Detail text */}
-            {issue.detail && <p className="mt-1.5 text-sm leading-6 text-slate-500">{issue.detail}</p>}
+            {issue.detail && <p className="mt-1.5 text-sm leading-6 text-zinc-500 dark:text-zinc-400">{issue.detail}</p>}
 
-            {/* Metadata badges */}
-            <div className="mt-3 flex flex-wrap items-center gap-2 text-xs">
-              <span className="rounded-lg bg-slate-100 px-2 py-1 text-slate-600">{issue.sectionTitle}</span>
+            <div className="mt-3 flex flex-wrap items-center gap-1.5 text-[11px]">
+              <span className="rounded-md bg-zinc-100 px-2 py-1 font-semibold text-zinc-600 dark:bg-zinc-800 dark:text-zinc-300">{issue.sectionTitle}</span>
               {location && (
-                <span className="rounded-lg bg-slate-100 px-2 py-1 font-mono text-slate-600">
+                <span className="rounded-md bg-zinc-100 px-2 py-1 font-mono text-zinc-600 dark:bg-zinc-800 dark:text-zinc-300">
                   {location.path}{location.line ? `:${location.line}` : ""}
                 </span>
               )}
-              {issue.ruleId && <span className="rounded-lg bg-slate-100 px-2 py-1 text-slate-500">{issue.ruleId}</span>}
+              {issue.ruleId && <span className="rounded-md bg-zinc-100 px-2 py-1 text-zinc-500 dark:bg-zinc-800 dark:text-zinc-400">{issue.ruleId}</span>}
+              {fixPreview && <span className="rounded-md bg-sky-50 px-2 py-1 font-semibold text-sky-700 dark:bg-sky-500/10 dark:text-sky-200">auto-fix available</span>}
             </div>
 
-            {/* Fix preview */}
             {fixPreview && (
-              <pre className="mt-3 max-h-48 overflow-auto whitespace-pre-wrap rounded-xl border border-blue-100 bg-blue-50 p-3 text-xs leading-5 text-slate-700">
+              <pre className="mt-3 max-h-40 overflow-auto whitespace-pre-wrap rounded-lg border border-sky-100 bg-sky-50 p-3 text-xs leading-5 text-zinc-700 dark:border-sky-500/20 dark:bg-sky-500/10 dark:text-zinc-200">
                 {fixPreview.after}
               </pre>
             )}
 
-            {/* Source links */}
             {issue.sources.length > 0 && (
-              <div className="mt-3 flex flex-wrap gap-2">
+              <div className="mt-3 flex flex-wrap gap-1.5">
                 {issue.sources.map((src, i) =>
                   src.url
-                    ? <a key={`${src.source}-${i}`} href={src.url} target="_blank" rel="noreferrer" className="control-focus rounded-lg px-2 py-1 text-xs font-bold text-blue-600 hover:bg-blue-50 hover:text-blue-700">{src.label}</a>
+                    ? <a key={`${src.source}-${i}`} href={src.url} target="_blank" rel="noreferrer" className="control-focus rounded-md px-2 py-1 text-[11px] font-semibold text-sky-700 hover:bg-sky-50 dark:text-sky-300 dark:hover:bg-sky-500/10">{src.label}</a>
                     : null
                 )}
               </div>
@@ -65,22 +62,21 @@ export function IssueCard({ issue, files, onOpenFile, onApplyFix }: IssueCardPro
           </div>
         </div>
 
-        {/* Action row */}
         <div className="mt-4 flex flex-wrap gap-2">
           {location && (
             <button
               onClick={() => onOpenFile(location.path, location.line)}
-              className="button-motion control-focus rounded-xl bg-slate-950 px-3 py-2 text-sm font-bold text-white hover:bg-slate-800"
+              className="button-motion control-focus rounded-lg bg-zinc-950 px-3 py-2 text-xs font-semibold text-lime-200 hover:bg-zinc-800 dark:bg-lime-200 dark:text-zinc-950 dark:hover:bg-lime-100"
             >
-              Open file{location.line ? ` at line ${location.line}` : ""}
+              Open file{location.line ? `:${location.line}` : ""}
             </button>
           )}
           {fixPreview && (
             <button
               onClick={() => onApplyFix(issue)}
-              className="button-motion control-focus rounded-xl bg-blue-600 px-3 py-2 text-sm font-bold text-white hover:bg-blue-700"
+              className="button-motion control-focus rounded-lg bg-sky-600 px-3 py-2 text-xs font-semibold text-white hover:bg-sky-700"
             >
-              Apply suggested fix
+              Apply fix
             </button>
           )}
         </div>
@@ -96,31 +92,75 @@ interface Props {
   onApplyIssueFix: (issue: ValidationIssue) => void
 }
 
-/** Flat list of all actionable issues with open-file and fix actions. */
 export function FindingsExplorer({ report, files, onOpenFile, onApplyIssueFix }: Props) {
-  const actionable = report.issues.filter((i) => i.type === "error" || i.type === "warning")
-  const visible = actionable.length > 0 ? actionable : report.issues
+  const [filter, setFilter] = useState<IssueFilter>("actionable")
+
+  const counts = useMemo(() => {
+    const fixable = report.issues.filter((issue) => issueFixPreview(issue, files)).length
+    return {
+      actionable: report.issues.filter((issue) => issue.type === "error" || issue.type === "warning").length,
+      errors: report.counts.errors,
+      warnings: report.counts.warnings,
+      fixable,
+      all: report.issues.length,
+    }
+  }, [files, report])
+
+  const visible = useMemo(() => {
+    const sorted = [...report.issues].sort((a, b) => {
+      const order = { error: 0, warning: 1, info: 2, pass: 3 } as Record<string, number>
+      return (order[a.type] ?? 4) - (order[b.type] ?? 4)
+    })
+    if (filter === "errors") return sorted.filter((issue) => issue.type === "error")
+    if (filter === "warnings") return sorted.filter((issue) => issue.type === "warning")
+    if (filter === "fixable") return sorted.filter((issue) => issueFixPreview(issue, files))
+    if (filter === "all") return sorted
+    const actionable = sorted.filter((issue) => issue.type === "error" || issue.type === "warning")
+    return actionable.length > 0 ? actionable : sorted
+  }, [files, filter, report.issues])
+
+  const severity = report.counts.errors > 0 ? "danger" : report.counts.warnings > 0 ? "warn" : "safe"
 
   return (
-    <div className="animate-soft-enter mx-auto max-w-[1180px] space-y-5">
+    <div className="animate-soft-enter mx-auto max-w-[1120px] space-y-4">
       <div className="report-page-header">
         <div>
-          <p className="muted-label">Prioritized diagnostics</p>
-          <h2 className="mt-2 text-2xl font-black tracking-tight text-slate-950">Findings</h2>
-          <p className="mt-2 max-w-3xl text-sm leading-6 text-slate-500">
-            Errors and warnings first. Open a finding to jump to the relevant file and line.
-            Informational findings are shown only when no actionable findings exist.
-          </p>
+          <p className="muted-label">Issue queue</p>
+          <h2 className="mt-1 text-xl font-semibold tracking-tight text-zinc-950 dark:text-zinc-50">Findings</h2>
+          <p className="mt-1 max-w-3xl text-sm leading-6 text-zinc-500 dark:text-zinc-400">Errors and warnings are prioritized. Fixable findings expose a one-click patch when the validator can infer a safe edit.</p>
         </div>
-        <StatusPill severity={report.counts.errors > 0 ? "danger" : report.counts.warnings > 0 ? "warn" : "safe"}>
-          {visible.length} shown
-        </StatusPill>
+        <CountPill severity={severity}>{visible.length} shown</CountPill>
       </div>
 
-      {visible.length === 0
-        ? <p className="panel-surface p-6 text-slate-500">No findings.</p>
-        : <div className="space-y-4">{visible.map((issue) => <IssueCard key={issue.id} issue={issue} files={files} onOpenFile={onOpenFile} onApplyFix={onApplyIssueFix} />)}</div>
-      }
+      <Surface className="p-2">
+        <div className="flex flex-wrap gap-1.5">
+          <FilterButton active={filter === "actionable"} onClick={() => setFilter("actionable")} label="Actionable" count={counts.actionable} />
+          <FilterButton active={filter === "errors"} onClick={() => setFilter("errors")} label="Errors" count={counts.errors} />
+          <FilterButton active={filter === "warnings"} onClick={() => setFilter("warnings")} label="Warnings" count={counts.warnings} />
+          <FilterButton active={filter === "fixable"} onClick={() => setFilter("fixable")} label="Fixable" count={counts.fixable} />
+          <FilterButton active={filter === "all"} onClick={() => setFilter("all")} label="All" count={counts.all} />
+        </div>
+      </Surface>
+
+      {visible.length === 0 ? (
+        <EmptyState title="No findings in this filter" detail="Switch filters to inspect informational output or section-level coverage." />
+      ) : (
+        <div className="space-y-3">
+          {visible.map((issue) => <IssueCard key={issue.id} issue={issue} files={files} onOpenFile={onOpenFile} onApplyFix={onApplyIssueFix} />)}
+        </div>
+      )}
     </div>
+  )
+}
+
+function FilterButton({ active, onClick, label, count }: { active: boolean; onClick: () => void; label: string; count: number }) {
+  return (
+    <button
+      onClick={onClick}
+      className={`button-motion control-focus inline-flex h-8 items-center gap-1.5 rounded-lg px-2.5 text-xs font-semibold ${active ? "bg-zinc-950 text-lime-200 dark:bg-lime-200 dark:text-zinc-950" : "text-zinc-600 hover:bg-zinc-100 hover:text-zinc-950 dark:text-zinc-300 dark:hover:bg-zinc-800 dark:hover:text-zinc-50"}`}
+    >
+      {label}
+      <span className={`rounded-full px-1.5 py-0.5 text-[10px] font-semibold ${active ? "bg-white/15 text-current dark:bg-zinc-950/10" : "bg-zinc-100 text-zinc-500 dark:bg-zinc-800 dark:text-zinc-400"}`}>{count}</span>
+    </button>
   )
 }

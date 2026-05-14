@@ -2,10 +2,8 @@ import React from "react"
 import type { ValidationReport } from "../../validator/types"
 import { anchorForIssue, resolveIssueLocation } from "../../domain/issues"
 import type { EditableSkillFile } from "../../domain/files"
-import { ScoreBar, SeverityIcon } from "../ui"
+import { ScoreBar, SeverityIcon, Surface } from "../ui"
 import { Metric } from "./Overview"
-
-// ─── Score Breakdown ──────────────────────────────────────────────────────────
 
 function openRelatedIssue(
   label: string,
@@ -39,117 +37,109 @@ interface ScoreBreakdownProps {
   onChangeView: (view: string, sectionId?: string | null) => void
 }
 
-/** Per-dimension score cards with sub-check drill-down. */
 export function ScoreBreakdown({ report, files, onOpenFile, onChangeView }: ScoreBreakdownProps) {
   const handleOpenRelated = (label: string) =>
     openRelatedIssue(label, report, files, onOpenFile, onChangeView)
 
   return (
-    <div className="animate-soft-enter mx-auto max-w-[1180px] space-y-5">
+    <div className="animate-soft-enter mx-auto max-w-[1120px] space-y-4">
       <div className="report-page-header">
         <div>
           <p className="muted-label">Scoring model</p>
-          <h2 className="mt-2 text-2xl font-black tracking-tight text-slate-950">Score</h2>
-          <p className="mt-2 max-w-3xl text-sm leading-6 text-slate-500">
-            Dimension-level score impact. Failed checks can jump to related findings when a match exists.
-          </p>
+          <h2 className="mt-1 text-xl font-semibold tracking-tight text-zinc-950 dark:text-zinc-50">Score</h2>
+          <p className="mt-1 max-w-3xl text-sm leading-6 text-zinc-500 dark:text-zinc-400">Dimension impact with failed sub-check navigation into the issue queue when a related finding exists.</p>
         </div>
       </div>
-      <div className="grid gap-6 lg:grid-cols-2">
+
+      <div className="grid gap-3 lg:grid-cols-2">
         {report.scoreDimensions.map((dim) => (
-          <section key={dim.id} className="panel-surface overflow-hidden">
-            <div className="border-b border-slate-100 p-5">
+          <Surface key={dim.id} className="overflow-hidden">
+            <div className="border-b border-zinc-100 p-4 dark:border-zinc-800">
               <div className="flex items-start justify-between gap-4">
-                <div>
-                  <h3 className="font-black text-slate-900">{dim.title}</h3>
-                  <p className="mt-1 text-sm leading-6 text-slate-500">{dim.summary}</p>
+                <div className="min-w-0">
+                  <h3 className="font-semibold text-zinc-950 dark:text-zinc-50">{dim.title}</h3>
+                  <p className="mt-1 text-sm leading-6 text-zinc-500 dark:text-zinc-400">{dim.summary}</p>
                 </div>
-                <div className="shrink-0 text-2xl font-black text-slate-900">
-                  {dim.score}<span className="text-sm font-medium text-slate-400"> / {dim.max}</span>
+                <div className="shrink-0 text-xl font-semibold text-zinc-950 dark:text-zinc-50">
+                  {dim.score}<span className="text-xs font-medium text-zinc-400">/{dim.max}</span>
                 </div>
               </div>
-              <div className="mt-4"><ScoreBar score={dim.score} max={dim.max} /></div>
+              <div className="mt-3"><ScoreBar score={dim.score} max={dim.max} /></div>
             </div>
-            <div className="divide-y divide-slate-100">
+            <div className="divide-y divide-zinc-100 dark:divide-zinc-800">
               {dim.subChecks.map((check, i) => (
                 <button
                   key={`${check.label}-${i}`}
                   onClick={() => !check.passed && handleOpenRelated(check.label)}
-                  className="button-motion control-focus flex min-h-11 w-full items-center gap-3 px-5 py-3 text-left hover:bg-slate-50"
+                  className="button-motion control-focus flex min-h-10 w-full items-center gap-2.5 px-4 py-2 text-left hover:bg-zinc-50 dark:hover:bg-zinc-900/80"
                 >
-                  <SeverityIcon severity={check.passed ? "pass" : "warning"} className="h-5 w-5 shrink-0" />
-                  <span className={`flex-1 text-sm ${check.passed ? "text-slate-700" : "font-semibold text-amber-700"}`}>
+                  <SeverityIcon severity={check.passed ? "pass" : "warning"} className="h-4 w-4 shrink-0" />
+                  <span className={`flex-1 text-sm ${check.passed ? "text-zinc-700 dark:text-zinc-300" : "font-semibold text-amber-800 dark:text-amber-200"}`}>
                     {check.label}
                   </span>
-                  <span className={`text-sm font-black ${check.passed ? "text-emerald-600" : "text-amber-600"}`}>
+                  <span className={`text-xs font-semibold ${check.passed ? "text-emerald-600 dark:text-emerald-300" : "text-amber-700 dark:text-amber-200"}`}>
                     {check.points > 0 ? "+" : ""}{check.points}/{check.maxPoints}
                   </span>
                 </button>
               ))}
             </div>
-          </section>
+          </Surface>
         ))}
       </div>
     </div>
   )
 }
 
-// ─── Token Budget ─────────────────────────────────────────────────────────────
-
-/** Token budget overview — SKILL.md, references, and total package estimates. */
 export function TokenBudgetView({ report }: { report: ValidationReport }) {
   return (
-    <div className="animate-soft-enter mx-auto max-w-[1180px] space-y-5">
+    <div className="animate-soft-enter mx-auto max-w-[1120px] space-y-4">
       <div className="report-page-header">
         <div>
           <p className="muted-label">Activation cost</p>
-          <h2 className="mt-2 text-2xl font-black tracking-tight text-slate-950">Token budget</h2>
-          <p className="mt-2 text-sm leading-6 text-slate-500">Approximate token usage when an agent activates this skill.</p>
+          <h2 className="mt-1 text-xl font-semibold tracking-tight text-zinc-950 dark:text-zinc-50">Token budget</h2>
+          <p className="mt-1 text-sm leading-6 text-zinc-500 dark:text-zinc-400">Approximate token usage when an agent activates this skill.</p>
         </div>
       </div>
-      <div className="grid gap-4 md:grid-cols-3">
+      <div className="grid gap-3 md:grid-cols-3">
         <Metric label="SKILL.md" value={`~${report.tokenBudget.skillMdTokens}`} tone="blue" />
-        <Metric label="References" value={`~${report.tokenBudget.refSubtotalTokens}`} tone="slate" />
-        <Metric label="Package total" value={`~${report.tokenBudget.totalPackageTokens}`} tone="slate" />
+        <Metric label="References" value={`~${report.tokenBudget.refSubtotalTokens}`} tone="zinc" />
+        <Metric label="Package total" value={`~${report.tokenBudget.totalPackageTokens}`} tone="zinc" />
       </div>
       {report.tokenBudget.largestRef && (
-        <div className="panel-surface p-5">
-          <div className="font-bold text-slate-900">Largest reference file</div>
-          <div className="mt-1 text-sm text-slate-500">
+        <Surface className="p-4">
+          <div className="text-sm font-semibold text-zinc-950 dark:text-zinc-50">Largest reference file</div>
+          <div className="mt-1 text-sm text-zinc-500 dark:text-zinc-400">
             {report.tokenBudget.largestRef.name} — ~{report.tokenBudget.largestRef.tokens} tokens
           </div>
-        </div>
+        </Surface>
       )}
     </div>
   )
 }
 
-// ─── Fixes ────────────────────────────────────────────────────────────────────
-
-/** Remaining scored fixes ordered by point value. */
 export function FixesView({ report }: { report: ValidationReport }) {
   return (
-    <div className="animate-soft-enter mx-auto max-w-[1180px] space-y-5">
+    <div className="animate-soft-enter mx-auto max-w-[1120px] space-y-4">
       <div className="report-page-header">
         <div>
           <p className="muted-label">Repair backlog</p>
-          <h2 className="mt-2 text-2xl font-black tracking-tight text-slate-950">Fixes</h2>
-          <p className="mt-2 text-sm leading-6 text-slate-500">Remaining scored improvements, ordered by highest impact.</p>
+          <h2 className="mt-1 text-xl font-semibold tracking-tight text-zinc-950 dark:text-zinc-50">Fixes</h2>
+          <p className="mt-1 text-sm leading-6 text-zinc-500 dark:text-zinc-400">Remaining scored improvements, ordered by highest impact.</p>
         </div>
       </div>
-      <div className="space-y-4">
+      <div className="space-y-3">
         {report.fixes.length === 0
-          ? <p className="panel-surface p-6 text-slate-500">No scored fixes remaining.</p>
+          ? <Surface className="p-4 text-sm text-zinc-500 dark:text-zinc-400">No scored fixes remaining.</Surface>
           : report.fixes.map((fix, i) => (
-            <div key={`${fix.label}-${i}`} className="panel-surface p-5">
+            <Surface key={`${fix.label}-${i}`} className="p-4">
               <div className="flex items-start justify-between gap-4">
                 <div>
-                  <div className="font-black text-slate-900">{fix.label}</div>
-                  <div className="mt-0.5 text-sm text-slate-500">{fix.dimension} · {fix.sectionId}</div>
+                  <div className="text-sm font-semibold text-zinc-950 dark:text-zinc-50">{fix.label}</div>
+                  <div className="mt-0.5 text-xs text-zinc-500 dark:text-zinc-400">{fix.dimension} · {fix.sectionId}</div>
                 </div>
-                <span className="rounded-full bg-blue-50 px-3 py-1 text-sm font-black text-blue-700">+{fix.points}</span>
+                <span className="rounded-full bg-sky-50 px-2.5 py-1 text-xs font-semibold text-sky-700 dark:bg-sky-500/10 dark:text-sky-200">+{fix.points}</span>
               </div>
-            </div>
+            </Surface>
           ))}
       </div>
     </div>

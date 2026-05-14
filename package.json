@@ -1,7 +1,7 @@
 {
   "name": "agent-skill-check",
   "private": true,
-  "version": "0.3.3",
+  "version": "0.3.7",
   "type": "module",
   "description": "Agent Skill Check — validate AI agent skill packages (SKILL.md, zip, .skill) in the browser with scores, findings, token budget, and export.",
   "scripts": {

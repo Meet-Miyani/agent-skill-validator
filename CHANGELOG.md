@@ -1,5 +1,32 @@
 # Changelog
 
+## 0.3.7
+
+- Unified the post-landing workspace with the landing page design system.
+- Replaced the report/editor shell palette with the same cream paper, zinc ink, lime accent, rounded surfaces, and subtle grid atmosphere used on the landing page.
+- Retuned header actions, report panels, file tree, tabs, score bars, status pills, and editor chrome for visual continuity while preserving readability.
+- Validator checking behavior remains unchanged.
+
+## 0.3.6
+
+- Redesigned the landing page using the frontend-design direction with a clearer editorial validation-bench aesthetic.
+- Reworked the upload panel, hero, trust bar, checks section, workflow, and sources section for better readability and navigation.
+- Kept validator checking behavior unchanged.
+
+## 0.3.5
+
+- Reworked post-upload typography for readability: switched dense tool surfaces to a native UI font stack, reduced overly heavy font weights, and softened letter spacing.
+- Increased sidebar, file tree, tab, header metadata, and editor text sizing where the previous redesign felt compressed.
+- Preserved the validator checking mechanism and existing report/editor functionality.
+
+## 0.3.4
+
+- Rebuilt the post-upload review workspace with a compact audit queue and reduced visual density.
+- Redesigned report overview, findings, score, section, file-risk, editor, file tree, tabs, and header surfaces for clearer navigation and alignment.
+- Added finding filters for actionable, error, warning, fixable, and all issue states without changing the validator checking mechanism.
+- Preserved live revalidation, file navigation, suggested fixes, AI prompt copy, JSON export, and repaired ZIP export.
+
+
 ## 0.3.3
 
 - Tightened the full app shell spacing across the header, sidebars, tabs, report views, file tree, and editor.

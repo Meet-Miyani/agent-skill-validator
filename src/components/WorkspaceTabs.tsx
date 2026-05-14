@@ -20,13 +20,12 @@ export function WorkspaceTabs({
 }) {
   const fileMap = new Map(files.map((file) => [file.path, file]))
   return (
-    <div className="flex h-12 shrink-0 items-end gap-1 overflow-x-auto border-b border-slate-200/80 bg-white/60 px-3 pt-2 backdrop-blur-xl">
+    <div className="flex h-10 shrink-0 items-end gap-1 overflow-x-auto border-b border-zinc-200 bg-white/65 px-2 pt-1.5 backdrop-blur-xl dark:border-zinc-800 dark:bg-zinc-950/45">
       <button
         onClick={() => onSelectTab("report")}
-        className={`button-motion control-focus flex h-10 shrink-0 items-center gap-2 rounded-t-xl border px-4 text-sm font-bold ${activeTab === "report" ? "border-slate-200 border-b-white bg-white text-blue-700 shadow-sm" : "border-transparent text-slate-600 hover:bg-white/80"}`}
+        className={`button-motion control-focus flex h-8 shrink-0 items-center gap-1.5 rounded-t-lg border px-3 text-[13px] font-medium ${activeTab === "report" ? "border-zinc-200 border-b-white bg-white text-zinc-950 shadow-sm dark:border-zinc-800 dark:border-b-zinc-950 dark:bg-lime-200 dark:text-zinc-950" : "border-transparent text-zinc-500 hover:bg-white/80 hover:text-zinc-900 dark:hover:bg-zinc-900 dark:hover:text-zinc-100"}`}
       >
-        <BarChart3 className="h-4 w-4" /> Report
-        <span className="rounded-full border border-slate-200 bg-slate-100 px-2 py-0.5 text-[10px] font-black uppercase text-slate-600">Pinned</span>
+        <BarChart3 className="h-3.5 w-3.5" /> Report
       </button>
 
       {openFileTabs.map((path) => {
@@ -35,22 +34,22 @@ export function WorkspaceTabs({
         return (
           <div
             key={path}
-            className={`group flex h-10 min-w-[140px] max-w-[240px] shrink-0 items-center overflow-hidden rounded-t-xl border ${active ? "border-slate-200 border-b-white bg-white text-blue-700 shadow-sm" : "border-transparent text-slate-600 hover:bg-white/80"}`}
+            className={`group flex h-8 min-w-[118px] max-w-[220px] shrink-0 items-center overflow-hidden rounded-t-lg border ${active ? "border-zinc-200 border-b-white bg-white text-zinc-950 shadow-sm dark:border-zinc-800 dark:border-b-zinc-950 dark:bg-lime-200 dark:text-zinc-950" : "border-transparent text-zinc-500 hover:bg-white/80 hover:text-zinc-900 dark:hover:bg-zinc-900 dark:hover:text-zinc-100"}`}
             title={path}
           >
             <button
               onClick={() => onSelectTab(path)}
-              className="control-focus flex h-full min-w-0 flex-1 items-center gap-2 px-3 text-left text-sm font-semibold"
+              className="control-focus flex h-full min-w-0 flex-1 items-center gap-1.5 px-2.5 text-left text-[13px] font-medium"
             >
               <span className="truncate">{shortFileName(path)}</span>
-              {file?.dirty && <span className="h-2 w-2 shrink-0 rounded-full bg-blue-500" title="Modified" />}
+              {file?.dirty && <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-sky-500" title="Modified" />}
             </button>
             <button
               onClick={() => onCloseFile(path)}
-              className="control-focus mr-1 flex h-7 w-7 shrink-0 items-center justify-center rounded-lg text-slate-400 transition hover:bg-slate-200 hover:text-slate-700"
+              className="control-focus mr-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-md text-zinc-400 transition hover:bg-zinc-200 hover:text-zinc-700 dark:hover:bg-zinc-800 dark:hover:text-zinc-100"
               aria-label={`Close ${path}`}
             >
-              <X className="h-3.5 w-3.5" />
+              <X className="h-3 w-3" />
             </button>
           </div>
         )
