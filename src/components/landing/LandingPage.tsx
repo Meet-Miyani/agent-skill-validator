@@ -5,8 +5,10 @@ import { HeroSection } from "./HeroSection"
 import { TrustBar, WhatGetsScanned, ChecksAndWorkflow } from "./FeaturesSection"
 import { SourcesSection } from "./SourcesSection"
 
-const GITHUB_URL = "https://github.com/Meet-Miyani/agent-skill-validator"
-const GITHUB_API = "https://api.github.com/repos/Meet-Miyani/agent-skill-validator"
+const DEFAULT_GITHUB_REPO = "Meet-Miyani/agent-skill-validator"
+const GITHUB_REPO = (import.meta.env.VITE_GITHUB_REPO || DEFAULT_GITHUB_REPO).replace(/^https?:\/\/github\.com\//, "").replace(/\/$/, "")
+const GITHUB_URL = `https://github.com/${GITHUB_REPO}`
+const GITHUB_API = `https://api.github.com/repos/${GITHUB_REPO}`
 
 interface Props {
   loading: boolean

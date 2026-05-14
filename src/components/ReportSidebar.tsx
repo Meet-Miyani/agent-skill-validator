@@ -1,5 +1,5 @@
 import React from "react"
-import { Activity, CheckCircle2, CheckSquare, ChevronLeft, ChevronRight, Layers, ShieldAlert } from "lucide-react"
+import { Activity, CheckCircle2, CheckSquare, ChevronLeft, ChevronRight, Layers, ShieldAlert, Cpu, Wrench } from "lucide-react"
 import type { ValidationReport, ValidationSection } from "../validator/types"
 import { ScoreBar, severityDotClass } from "./ui"
 
@@ -7,6 +7,8 @@ export const reportViews = [
   { id: "overview", label: "Overview", icon: Activity },
   { id: "findings", label: "Issues", icon: ShieldAlert },
   { id: "score", label: "Score", icon: CheckSquare },
+  { id: "token", label: "Tokens", icon: Cpu },
+  { id: "fixes", label: "Fixes", icon: Wrench },
   { id: "files", label: "Files", icon: Layers },
 ]
 

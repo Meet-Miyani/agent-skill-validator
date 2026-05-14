@@ -1,14 +1,16 @@
 {
   "name": "agent-skill-validator",
   "private": true,
-  "version": "0.3.7",
+  "version": "0.3.9",
   "type": "module",
   "description": "AI skill checker and agent skill validator for folders, ZIPs, .skill bundles, SKILL.md files, scripts, references, links, assets, and token budget.",
   "scripts": {
     "dev": "vite",
-    "build": "tsc -b && vite build",
+    "build": "npm run typecheck && vite build",
     "preview": "vite preview",
-    "typecheck": "tsc -b"
+    "typecheck": "tsc -p tsconfig.json --noEmit && tsc -p tsconfig.node.json --noEmit",
+    "lint": "node scripts/lint.mjs",
+    "validate": "npm run typecheck && npm run lint && npm run build"
   },
   "dependencies": {
     "js-tiktoken": "^1.0.19",

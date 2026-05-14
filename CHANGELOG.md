@@ -1,5 +1,21 @@
 # Changelog
 
+## 0.3.9
+
+- Fixed drag-and-drop uploads after lazy-loading package parsing by snapshotting dropped files and browser directory entries before the asynchronous importer runs.
+- Added a safe fallback from directory-entry parsing to the captured `DataTransfer.files` list when browser drag data entries are unavailable.
+- Kept the validator checking mechanism unchanged.
+
+## 0.3.8
+
+- Lazy-load validator and archive handling so the landing page bundle stays lightweight.
+- Added direct sidebar access for token budget and fix recommendations.
+- Moved upload/archive normalization into lighter domain modules to avoid pulling validation dependencies into initial load.
+- Added a dependency-free quality lint gate and unified typecheck/build scripts.
+- Cleaned environment configuration, GitHub repo settings, and SEO metadata.
+- Removed generated build artifacts and local OS metadata from the source handoff.
+
+
 ## 0.3.7
 
 - Unified the post-landing workspace with the landing page design system.

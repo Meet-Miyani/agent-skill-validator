@@ -1,5 +1,5 @@
 import type { UploadSkillFile } from "./files"
-import { toEditableFiles } from "./packageIO"
+import { toEditableFiles } from "./files"
 
 function textFile(path: string, content: string): UploadSkillFile {
   return { path, content, size: content.length }

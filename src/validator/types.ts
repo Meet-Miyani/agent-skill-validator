@@ -3,6 +3,8 @@ export type FindingType = "pass" | "info" | "warning" | "error"
 export type SectionStatus = "pass" | "pass_with_warnings" | "info" | "fail"
 
 export type SkillFile = { path: string; content: string; binary?: boolean; size?: number }
+export type TokenCostEstimate = { model: string; label: string; costPer1kActivations: number }
+export type ReadabilityScores = { fleschReadingEase: number; averageSentenceLength: number; averageWordsPerLine: number }
 export type TokenEstimate = { tokens: number; chars: number; words: number; lines: number }
 export type RuleReference = { label: string; source: string; url?: string; kind: "official" | "spec" | "internal" | "heuristic" }
 export type ScoreCheck = { label: string; passed: boolean; points: number; maxPoints: number }
@@ -38,7 +40,7 @@ export type ValidationReport = {
   structure: { hasSkillMd: boolean; hasReadme: boolean; hasRefsDir: boolean; hasScriptsDir: boolean; hasLicense: boolean; dirs: { name: string; fileCount: number }[] };
   contentQuality: { headings: number; codeBlocks: number; internalLinks: number; externalLinks: number; bodyLines: number; bodyTokens: number; descriptionLength: number; skillName: string };
   files: { total: number; skillFile?: TokenEstimate; references: ReferenceFileInfo[]; risks: FileRisk[]; mergedRisks: {path: string, highestSeverity: Severity, issues: { severity: Severity; reason: string; sectionId: string }[]}[] };
-  tokenBudget: { skillMdTokens: number; skillMdZone: Severity; refSubtotalTokens: number; totalPackageTokens: number; totalPackageZone: Severity; largestRef?: { name: string; tokens: number }; costEstimates: any[] };
-  readabilityScores: any;
+  tokenBudget: { skillMdTokens: number; skillMdZone: Severity; refSubtotalTokens: number; totalPackageTokens: number; totalPackageZone: Severity; largestRef?: { name: string; tokens: number }; costEstimates: TokenCostEstimate[] };
+  readabilityScores: ReadabilityScores | null;
   contextWindows: { ctx200kPct: number; ctx128kPct: number; initialActivationPct: number; usesProgressiveDisclosure: boolean };
 }

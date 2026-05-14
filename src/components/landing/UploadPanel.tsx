@@ -1,4 +1,4 @@
-import React, { type ChangeEvent, type DragEvent } from "react"
+import React, { type ChangeEvent, type DragEvent, type InputHTMLAttributes } from "react"
 import { FileArchive, FolderOpen, Loader2, LockKeyhole, ScanLine, UploadCloud } from "lucide-react"
 
 interface Props {
@@ -12,6 +12,7 @@ interface Props {
 }
 
 const ACCEPTED_FORMATS = ["ZIP", ".skill", "folder", "SKILL.md"]
+const directoryInputProps = { webkitdirectory: "true" } satisfies InputHTMLAttributes<HTMLInputElement> & { webkitdirectory: string }
 
 export function UploadPanel({
   loading, loadingStatusText, dragActive, error,
@@ -64,7 +65,7 @@ export function UploadPanel({
             <label className="theme-secondary-button control-focus button-motion inline-flex min-h-11 cursor-pointer items-center justify-center gap-2 rounded-full border px-5 py-2.5 text-sm font-semibold">
               <FolderOpen className="h-4 w-4" />
               Browse folder
-              <input className="hidden" type="file" multiple {...({ webkitdirectory: "true" } as any)} onChange={handleBrowse} />
+              <input className="hidden" type="file" multiple {...directoryInputProps} onChange={handleBrowse} />
             </label>
           </div>
 
