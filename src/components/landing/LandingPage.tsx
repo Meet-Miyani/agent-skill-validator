@@ -9,6 +9,8 @@ const DEFAULT_GITHUB_REPO = "Meet-Miyani/agent-skill-validator"
 const GITHUB_REPO = (import.meta.env.VITE_GITHUB_REPO || DEFAULT_GITHUB_REPO).replace(/^https?:\/\/github\.com\//, "").replace(/\/$/, "")
 const GITHUB_URL = `https://github.com/${GITHUB_REPO}`
 const GITHUB_API = `https://api.github.com/repos/${GITHUB_REPO}`
+const GITHUB_OWNER = GITHUB_REPO.split("/")[0] || "Meet-Miyani"
+const GITHUB_OWNER_URL = `https://github.com/${GITHUB_OWNER}`
 
 interface Props {
   busy: boolean
@@ -93,7 +95,18 @@ export function UploadDropzone({
 
       <footer className="border-t border-[color:var(--theme-border)] bg-[color:var(--theme-canvas)]">
         <div className="mx-auto flex max-w-7xl flex-col gap-3 px-4 py-6 text-sm text-[color:var(--theme-text-muted)] sm:flex-row sm:items-center sm:justify-between sm:px-6 lg:px-8">
-          <p>Independent browser-based validator for AI agent skills.</p>
+          <p>
+            Made by{" "}
+            <a
+              href={GITHUB_OWNER_URL}
+              target="_blank"
+              rel="noreferrer"
+              className="control-focus rounded-md font-semibold text-[color:var(--theme-text-primary)] hover:text-[color:var(--theme-accent)]"
+            >
+              Meet Miyani
+            </a>
+            {" "}for AI agent skill authors.
+          </p>
           <div className="flex flex-wrap items-center gap-4">
             <span>Local browser validation</span>
             <a
