@@ -106,7 +106,7 @@ export function UploadPanel({
       )}
 
       <div className="mt-3 flex items-start gap-3 rounded-2xl border border-[color:var(--theme-border)] bg-[color:var(--theme-surface-muted)] px-4 py-3 text-[color:var(--theme-text-muted)]">
-        <LockKeyhole className="mt-0.5 h-4 w-4 shrink-0 text-[color:var(--theme-icon-fg)]" />
+        <LockKeyhole className="mt-0.5 h-4 w-4 shrink-0 text-[color:var(--theme-icon-muted-fg)]" />
         <p className="text-xs leading-5"><span className="font-semibold">No upload endpoint.</span> Files are parsed locally, checked locally, edited locally, and exported from memory.</p>
       </div>
     </aside>
