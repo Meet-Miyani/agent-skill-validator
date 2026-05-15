@@ -8,6 +8,8 @@
 [![Powered by Vite](https://img.shields.io/badge/powered%20by-Vite-646cff.svg)](https://vite.dev)
 [![Node >=20](https://img.shields.io/badge/node-%3E%3D20-339933.svg)](package.json)
 
+![SkillLint social preview showing an AI skill package flowing into a validation checklist.](public/social-preview.png)
+
 SkillLint is a local-first browser validator for AI agent skills. Drop in a skill package and it produces a structured audit for `SKILL.md`, references, scripts, metadata, markdown links, token budget, security patterns, and package hygiene.
 
 Uploads stay in the browser session. The app does not need a server to inspect your files, build the report, apply supported repairs, or export a revised bundle.
