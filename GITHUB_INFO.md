@@ -41,10 +41,16 @@ github-pages
 | `description` | `Check and validate AI agent skills in your browser. Upload folders, ZIPs, .skill bundles, or SKILL.md files and review scripts, references, links, assets, and token budget.` |
 | `application-name` | `SkillLint` |
 | `theme-color` | `#d7ff45` |
+| `image` | `https://<username>.github.io/agent-skill-validator/social-preview.png` |
+| `itemprop:image` | `https://<username>.github.io/agent-skill-validator/social-preview.png` |
 | `og:title` | `SkillLint — AI Skill Checker & Agent Skill Validator` |
 | `og:description` | `Upload an AI agent skill folder, ZIP, .skill bundle, or SKILL.md file and get a clean validation report for structure, scripts, references, links, assets, and token budget.` |
+| `og:image` | `https://<username>.github.io/agent-skill-validator/social-preview.png` |
+| `og:image:alt` | `SkillLint social preview showing an AI skill package flowing into a validation checklist.` |
+| `twitter:card` | `summary_large_image` |
 | `twitter:title` | `SkillLint — AI Skill Checker & Agent Skill Validator` |
 | `twitter:description` | `Check and validate AI agent skills in the browser, including folders, ZIPs, .skill bundles, and SKILL.md files.` |
+| `twitter:image` | `https://<username>.github.io/agent-skill-validator/social-preview.png` |
 | Keywords | `AI skill checker, agent skill validator, skill checker, skill check, SKILL.md validator, .skill validator, Claude skills validator, AI agent skills` |
 
 Canonical and social URLs should resolve under:
@@ -65,7 +71,10 @@ https://<username>.github.io/agent-skill-validator/
   "operatingSystem": "Web",
   "description": "A browser-based AI skill checker and agent skill validator for folders, ZIP archives, .skill bundles, SKILL.md files, scripts, references, links, assets, token budget, and structure.",
   "url": "https://<username>.github.io/agent-skill-validator/",
-  "softwareVersion": "0.3.7",
+  "image": "https://<username>.github.io/agent-skill-validator/social-preview.png",
+  "thumbnailUrl": "https://<username>.github.io/agent-skill-validator/social-preview.png",
+  "screenshot": "https://<username>.github.io/agent-skill-validator/social-preview.png",
+  "softwareVersion": "0.3.9",
   "offers": {
     "@type": "Offer",
     "price": "0",

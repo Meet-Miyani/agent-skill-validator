@@ -1,0 +1,33 @@
+{
+  "name": "SkillLint",
+  "short_name": "SkillLint",
+  "description": "AI skill checker and agent skill validator for folders, ZIPs, .skill bundles, and SKILL.md files.",
+  "start_url": ".",
+  "scope": ".",
+  "display": "standalone",
+  "background_color": "#f7f4ec",
+  "theme_color": "#d7ff45",
+  "icons": [
+    {
+      "src": "favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "social-preview.png",
+      "sizes": "1280x640",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "social-preview.png",
+      "sizes": "1280x640",
+      "type": "image/png",
+      "form_factor": "wide",
+      "label": "SkillLint validation preview"
+    }
+  ]
+}

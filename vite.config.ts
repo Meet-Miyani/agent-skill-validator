@@ -12,6 +12,12 @@ function normalizeBasePath(raw: string | undefined): string {
   return base
 }
 
+function normalizeSiteUrl(raw: string | undefined): string {
+  const trimmed = raw?.trim()
+  if (!trimmed) return ""
+  return trimmed.endsWith("/") ? trimmed : `${trimmed}/`
+}
+
 function injectSiteUrlForHtml(): Plugin {
   return {
     name: "inject-site-url-html",
@@ -20,7 +26,7 @@ function injectSiteUrlForHtml(): Plugin {
       handler(html, ctx) {
         const mode = ctx.server?.config?.mode ?? "production"
         const fileEnv = loadEnv(mode, process.cwd(), "")
-        const site = (process.env.VITE_SITE_URL ?? fileEnv.VITE_SITE_URL ?? "").trim()
+        const site = normalizeSiteUrl(process.env.VITE_SITE_URL ?? fileEnv.VITE_SITE_URL)
         let out = html.replaceAll("__SITE_URL__", site)
         if (!site) {
           out = out.replace(/\s*<link rel="canonical"[^>]*>\s*\n?/gi, "\n")
